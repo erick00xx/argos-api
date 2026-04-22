@@ -1,4 +1,5 @@
 using ArgosApi.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ArgosApi.Controllers;
@@ -15,6 +16,7 @@ public class AttendanceController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize]
     public async Task<IActionResult> GetAttendances([FromQuery] Guid? employeeId = null, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
         var result = await _attendanceService.GetPagedAsync(pageNumber, pageSize, employeeId);

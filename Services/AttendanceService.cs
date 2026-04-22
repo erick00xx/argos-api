@@ -180,6 +180,9 @@ public class AttendanceService : IAttendanceService
                 .Select(a => new AttendanceDto
                 {
                     Id = a.Id,
+                    FullName = a.Employee.FirstName + " " + a.Employee.LastName,
+                    Timestamp = a.PunchDateTime,
+                    Type = a.PunchType,
                     EmployeeId = a.EmployeeId,
                     DeviceName = a.Device!.Name,
                 })
