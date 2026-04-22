@@ -18,6 +18,9 @@ public class Employee : EntityBase
     [MaxLength(30)]
     public required string Document { get; set; }
     // Código interno visible en UI ("Código ficha")
+    [MaxLength(10)]
+    public required string EnrolledId { get; set; } // Pin en reloj
+    public required string PasswordHash { get; set; }
     [MaxLength(30)]
     public string? FileCode { get; set; }
     [MaxLength(100)]
@@ -49,6 +52,17 @@ public class Employee : EntityBase
     [MaxLength(30)]
     public string? MobilePhone { get; set; }
     public bool IsPhoneVerified { get; set; } = false;
+    public bool notifyAttByEmail { get; set; } = false;
+    public bool attWebAllowed { get; set; } = false; // Permitir marcar asistencia desde la web (sin reloj)
+    public bool IsAttendanceTracked { get; set; } = true;
+    
+    [MaxLength(100)]
+    public required string ClockName { get; set; }
+    public bool ClockPrivilege { get; set; } = false;
+    public bool IsPasswordAllowed { get; set; } = false; // Permite marcar por contraseña en reloj
+    [MaxLength(20)]
+    public string? ClockPasswordHash { get; set; }
+
     public DateTime ContractStartDate { get; set; }
     public DateTime? ContractEndDate { get; set; }
 
@@ -62,7 +76,6 @@ public class Employee : EntityBase
     public CompanyAlias? Alias { get; set; }
 
     // Perfil de enrolamiento/control en reloj (1 a 1)
-    public ClockProfile? ClockProfile { get; set; }
     public User? User { get; set; }
     public ICollection<EmployeeShift> EmployeeShifts { get; set; } = new List<EmployeeShift>();
     public ICollection<Attendance> Attendances { get; set; } = new List<Attendance>();

@@ -35,10 +35,10 @@ public class AttendanceService : IAttendanceService
             .Distinct()
             .ToList();
 
-        var employeeByPin = await _context.ClockProfiles
+        var employeeByPin = await _context.Employees
             .AsNoTracking()
-            .Where(cp => pins.Contains(cp.EnrolledId))
-            .ToDictionaryAsync(cp => cp.EnrolledId, cp => cp.EmployeeId);
+            .Where(e => pins.Contains(e.EnrolledId))
+            .ToDictionaryAsync(e => e.EnrolledId, e => e.Id);
 
         var deviceBySerial = await _context.Devices
             .AsNoTracking()
@@ -85,10 +85,10 @@ public class AttendanceService : IAttendanceService
         if (string.IsNullOrWhiteSpace(pin))
             return false;
 
-        var employeeId = await _context.ClockProfiles
+        var employeeId = await _context.Employees
             .AsNoTracking()
-            .Where(cp => cp.EnrolledId == pin)
-            .Select(cp => (Guid?)cp.EmployeeId)
+            .Where(e => e.EnrolledId == pin)
+            .Select(e => (Guid?)e.Id)
             .FirstOrDefaultAsync();
 
         if (!employeeId.HasValue)

@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ArgosApi.Models;
+using ArgosApi.Enums;
 
 namespace ArgosApi.Data;
 
@@ -15,7 +17,6 @@ public class ApplicationDbContext : DbContext
     public DbSet<Department> Departments => Set<Department>();
     public DbSet<Device> Devices => Set<Device>();
     public DbSet<Employee> Employees => Set<Employee>();
-    public DbSet<ClockProfile> ClockProfiles => Set<ClockProfile>();
     public DbSet<Schedule> Schedules => Set<Schedule>();
     public DbSet<Shift> Shifts => Set<Shift>();
     public DbSet<ShiftDetail> ShiftDetails => Set<ShiftDetail>();
@@ -27,6 +28,32 @@ public class ApplicationDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        var enumsAsString = new HashSet<Type>
+        {
+            typeof(DocumentType),
+            typeof(Manufacturer),
+            typeof(TaxIdType),
+            typeof(BiometricType)
+        };
+
+
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            foreach (var property in entityType.GetProperties())
+            {
+                var propertyType = Nullable.GetUnderlyingType(property.ClrType) ?? property.ClrType;
+
+                if (!propertyType.IsEnum || !enumsAsString.Contains(propertyType))
+                {
+                    continue;
+                }
+
+                var converterType = typeof(EnumToStringConverter<>).MakeGenericType(propertyType);
+                var converter = (ValueConverter)Activator.CreateInstance(converterType, new object?[] { null })!;
+                property.SetValueConverter(converter);
+            }
+        }
 
         modelBuilder.Entity<CompanyAlias>()
             .HasMany(e => e.Employees)
@@ -47,5 +74,6 @@ public class ApplicationDbContext : DbContext
                 .OnDelete(DeleteBehavior.SetNull);
 
         });
+
     }
 }

@@ -111,8 +111,9 @@ namespace ArgosApi.Migrations
                         .IsRequired()
                         .HasColumnType("bytea");
 
-                    b.Property<int>("Type")
-                        .HasColumnType("integer");
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -178,58 +179,6 @@ namespace ArgosApi.Migrations
                     b.ToTable("Branches");
                 });
 
-            modelBuilder.Entity("ArgosApi.Models.ClockProfile", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("ClockName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("ClockPasswordHash")
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.Property<bool>("ClockPrivilege")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("CreatedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("EmployeeId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("EnrolledId")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<bool>("IsAttendanceTracked")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsPasswordAllowed")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("UpdatedBy")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EmployeeId")
-                        .IsUnique();
-
-                    b.ToTable("ClockProfiles");
-                });
-
             modelBuilder.Entity("ArgosApi.Models.Company", b =>
                 {
                     b.Property<Guid>("Id")
@@ -266,8 +215,8 @@ namespace ArgosApi.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)");
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.Property<string>("HRDirectorEmail")
                         .HasColumnType("text");
@@ -289,8 +238,9 @@ namespace ArgosApi.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("character varying(30)");
 
-                    b.Property<int>("LegalRepresentativeDocumentType")
-                        .HasColumnType("integer");
+                    b.Property<string>("LegalRepresentativeDocumentType")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("LegalRepresentativeEmail")
                         .IsRequired()
@@ -309,8 +259,12 @@ namespace ArgosApi.Migrations
 
                     b.Property<string>("Nickname")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
@@ -325,8 +279,9 @@ namespace ArgosApi.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("character varying(30)");
 
-                    b.Property<int>("TaxType")
-                        .HasColumnType("integer");
+                    b.Property<string>("TaxType")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -359,8 +314,9 @@ namespace ArgosApi.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("character varying(30)");
 
-                    b.Property<int>("LegalRepresentativeDocumentType")
-                        .HasColumnType("integer");
+                    b.Property<string>("LegalRepresentativeDocumentType")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("LegalRepresentativeName")
                         .IsRequired()
@@ -377,8 +333,9 @@ namespace ArgosApi.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("character varying(30)");
 
-                    b.Property<int>("TaxType")
-                        .HasColumnType("integer");
+                    b.Property<string>("TaxType")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -556,6 +513,18 @@ namespace ArgosApi.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.Property<string>("ClockName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("ClockPasswordHash")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<bool>("ClockPrivilege")
+                        .HasColumnType("boolean");
+
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uuid");
 
@@ -583,8 +552,14 @@ namespace ArgosApi.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("character varying(30)");
 
-                    b.Property<int>("DocumentType")
-                        .HasColumnType("integer");
+                    b.Property<string>("DocumentType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("EnrolledId")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
 
                     b.Property<string>("FileCode")
                         .HasMaxLength(30)
@@ -602,6 +577,12 @@ namespace ArgosApi.Migrations
                     b.Property<string>("HomePhone")
                         .HasMaxLength(30)
                         .HasColumnType("character varying(30)");
+
+                    b.Property<bool>("IsAttendanceTracked")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsPasswordAllowed")
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsPersonalEmailVerified")
                         .HasColumnType("boolean");
@@ -626,6 +607,10 @@ namespace ArgosApi.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("PersonalEmail")
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
@@ -639,6 +624,15 @@ namespace ArgosApi.Migrations
                     b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("attWebAllowed")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("notifyAttByEmail")
+                        .HasColumnType("boolean");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AliasId");
@@ -648,6 +642,8 @@ namespace ArgosApi.Migrations
                     b.HasIndex("CompanyId");
 
                     b.HasIndex("DepartmentId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Employees");
                 });
@@ -855,19 +851,27 @@ namespace ArgosApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("CompanyId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("EmployeeId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("Document")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
+
+                    b.Property<string>("DocumentType")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -875,15 +879,9 @@ namespace ArgosApi.Migrations
                     b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasMaxLength(80)
-                        .HasColumnType("character varying(80)");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("EmployeeId")
-                        .IsUnique();
+                    b.HasIndex("CompanyId");
 
                     b.ToTable("Users");
                 });
@@ -926,17 +924,6 @@ namespace ArgosApi.Migrations
                         .IsRequired();
 
                     b.Navigation("Company");
-                });
-
-            modelBuilder.Entity("ArgosApi.Models.ClockProfile", b =>
-                {
-                    b.HasOne("ArgosApi.Models.Employee", "Employee")
-                        .WithOne("ClockProfile")
-                        .HasForeignKey("ArgosApi.Models.ClockProfile", "EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("ArgosApi.Models.CompanyAlias", b =>
@@ -997,6 +984,10 @@ namespace ArgosApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ArgosApi.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
                     b.Navigation("Alias");
 
                     b.Navigation("Branch");
@@ -1004,6 +995,8 @@ namespace ArgosApi.Migrations
                     b.Navigation("Company");
 
                     b.Navigation("Department");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ArgosApi.Models.EmployeeShift", b =>
@@ -1068,11 +1061,11 @@ namespace ArgosApi.Migrations
 
             modelBuilder.Entity("ArgosApi.Models.User", b =>
                 {
-                    b.HasOne("ArgosApi.Models.Employee", "Employee")
-                        .WithOne("User")
-                        .HasForeignKey("ArgosApi.Models.User", "EmployeeId");
+                    b.HasOne("ArgosApi.Models.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId");
 
-                    b.Navigation("Employee");
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("ArgosApi.Models.Branch", b =>
@@ -1114,11 +1107,7 @@ namespace ArgosApi.Migrations
 
                     b.Navigation("BiometricTemplates");
 
-                    b.Navigation("ClockProfile");
-
                     b.Navigation("EmployeeShifts");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ArgosApi.Models.Schedule", b =>

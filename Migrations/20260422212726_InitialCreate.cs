@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ArgosApi.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,18 +17,19 @@ namespace ArgosApi.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     CompanyName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    TaxType = table.Column<int>(type: "integer", nullable: false),
+                    TaxType = table.Column<string>(type: "text", nullable: false),
                     TaxId = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
                     BusinessLine = table.Column<string>(type: "character varying(120)", maxLength: 120, nullable: false),
                     PhoneNumber = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
-                    Nickname = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Email = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    Nickname = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    Email = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    PasswordHash = table.Column<string>(type: "text", nullable: false),
                     AddressLine1 = table.Column<string>(type: "text", nullable: true),
                     AddressLine2 = table.Column<string>(type: "text", nullable: true),
                     City = table.Column<string>(type: "text", nullable: true),
                     Country = table.Column<string>(type: "text", nullable: true),
                     PostalCode = table.Column<string>(type: "text", nullable: true),
-                    LegalRepresentativeDocumentType = table.Column<int>(type: "integer", nullable: false),
+                    LegalRepresentativeDocumentType = table.Column<string>(type: "text", nullable: false),
                     LegalRepresentativeDocument = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
                     LegalRepresentativeFullName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     LegalRepresentativeEmail = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
@@ -82,9 +83,9 @@ namespace ArgosApi.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    TaxType = table.Column<int>(type: "integer", nullable: false),
+                    TaxType = table.Column<string>(type: "text", nullable: false),
                     TaxId = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
-                    LegalRepresentativeDocumentType = table.Column<int>(type: "integer", nullable: false),
+                    LegalRepresentativeDocumentType = table.Column<string>(type: "text", nullable: false),
                     LegalRepresentativeDocument = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
                     LegalRepresentativeName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -192,6 +193,30 @@ namespace ArgosApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: true),
+                    DocumentType = table.Column<string>(type: "text", nullable: false),
+                    Document = table.Column<string>(type: "character varying(80)", maxLength: 80, nullable: false),
+                    PasswordHash = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Users_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Devices",
                 columns: table => new
                 {
@@ -232,6 +257,37 @@ namespace ArgosApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ShiftDetails",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ShiftId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ScheduleId = table.Column<Guid>(type: "uuid", nullable: false),
+                    WeekNumber = table.Column<int>(type: "integer", nullable: false),
+                    DayOfWeek = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShiftDetails", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ShiftDetails_Schedules_ScheduleId",
+                        column: x => x.ScheduleId,
+                        principalTable: "Schedules",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ShiftDetails_Shifts_ShiftId",
+                        column: x => x.ShiftId,
+                        principalTable: "Shifts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Employees",
                 columns: table => new
                 {
@@ -241,8 +297,10 @@ namespace ArgosApi.Migrations
                     CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
                     AliasId = table.Column<Guid>(type: "uuid", nullable: true),
                     RegistrationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    DocumentType = table.Column<int>(type: "integer", nullable: false),
+                    DocumentType = table.Column<string>(type: "text", nullable: false),
                     Document = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
+                    EnrolledId = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
+                    PasswordHash = table.Column<string>(type: "text", nullable: false),
                     FileCode = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: true),
                     FirstName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     LastName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
@@ -259,8 +317,16 @@ namespace ArgosApi.Migrations
                     HomePhone = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: true),
                     MobilePhone = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: true),
                     IsPhoneVerified = table.Column<bool>(type: "boolean", nullable: false),
+                    notifyAttByEmail = table.Column<bool>(type: "boolean", nullable: false),
+                    attWebAllowed = table.Column<bool>(type: "boolean", nullable: false),
+                    IsAttendanceTracked = table.Column<bool>(type: "boolean", nullable: false),
+                    ClockName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    ClockPrivilege = table.Column<bool>(type: "boolean", nullable: false),
+                    IsPasswordAllowed = table.Column<bool>(type: "boolean", nullable: false),
+                    ClockPasswordHash = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
                     ContractStartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ContractEndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uuid", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -293,37 +359,11 @@ namespace ArgosApi.Migrations
                         principalTable: "Departments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ShiftDetails",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    ShiftId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ScheduleId = table.Column<Guid>(type: "uuid", nullable: false),
-                    WeekNumber = table.Column<int>(type: "integer", nullable: false),
-                    DayOfWeek = table.Column<int>(type: "integer", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: true),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ShiftDetails", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ShiftDetails_Schedules_ScheduleId",
-                        column: x => x.ScheduleId,
-                        principalTable: "Schedules",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ShiftDetails_Shifts_ShiftId",
-                        column: x => x.ShiftId,
-                        principalTable: "Shifts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_Employees_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -369,7 +409,7 @@ namespace ArgosApi.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     EmployeeId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Type = table.Column<int>(type: "integer", nullable: false),
+                    Type = table.Column<string>(type: "text", nullable: false),
                     FingerIndex = table.Column<int>(type: "integer", nullable: true),
                     TemplateData = table.Column<byte[]>(type: "bytea", nullable: false),
                     Format = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
@@ -384,34 +424,6 @@ namespace ArgosApi.Migrations
                     table.PrimaryKey("PK_BiometricTemplates", x => x.Id);
                     table.ForeignKey(
                         name: "FK_BiometricTemplates_Employees_EmployeeId",
-                        column: x => x.EmployeeId,
-                        principalTable: "Employees",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ClockProfiles",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    EmployeeId = table.Column<Guid>(type: "uuid", nullable: false),
-                    IsAttendanceTracked = table.Column<bool>(type: "boolean", nullable: false),
-                    EnrolledId = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    ClockName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    ClockPrivilege = table.Column<bool>(type: "boolean", nullable: false),
-                    IsPasswordAllowed = table.Column<bool>(type: "boolean", nullable: false),
-                    ClockPasswordHash = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: true),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ClockProfiles", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ClockProfiles_Employees_EmployeeId",
                         column: x => x.EmployeeId,
                         principalTable: "Employees",
                         principalColumn: "Id",
@@ -450,29 +462,6 @@ namespace ArgosApi.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Users",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    EmployeeId = table.Column<Guid>(type: "uuid", nullable: true),
-                    UserName = table.Column<string>(type: "character varying(80)", maxLength: 80, nullable: false),
-                    PasswordHash = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: true),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Users", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Users_Employees_EmployeeId",
-                        column: x => x.EmployeeId,
-                        principalTable: "Employees",
-                        principalColumn: "Id");
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_Attendances_DeviceId",
                 table: "Attendances",
@@ -492,12 +481,6 @@ namespace ArgosApi.Migrations
                 name: "IX_Branches_CompanyId",
                 table: "Branches",
                 column: "CompanyId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ClockProfiles_EmployeeId",
-                table: "ClockProfiles",
-                column: "EmployeeId",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_CompanyAliases_CompanyId",
@@ -535,6 +518,11 @@ namespace ArgosApi.Migrations
                 column: "DepartmentId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Employees_UserId",
+                table: "Employees",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_EmployeeShifts_EmployeeId_StartDate_EndDate",
                 table: "EmployeeShifts",
                 columns: new[] { "EmployeeId", "StartDate", "EndDate" });
@@ -565,10 +553,9 @@ namespace ArgosApi.Migrations
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_EmployeeId",
+                name: "IX_Users_CompanyId",
                 table: "Users",
-                column: "EmployeeId",
-                unique: true);
+                column: "CompanyId");
         }
 
         /// <inheritdoc />
@@ -581,28 +568,22 @@ namespace ArgosApi.Migrations
                 name: "BiometricTemplates");
 
             migrationBuilder.DropTable(
-                name: "ClockProfiles");
-
-            migrationBuilder.DropTable(
                 name: "EmployeeShifts");
 
             migrationBuilder.DropTable(
                 name: "ShiftDetails");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "Devices");
 
             migrationBuilder.DropTable(
-                name: "Devices");
+                name: "Employees");
 
             migrationBuilder.DropTable(
                 name: "Schedules");
 
             migrationBuilder.DropTable(
                 name: "Shifts");
-
-            migrationBuilder.DropTable(
-                name: "Employees");
 
             migrationBuilder.DropTable(
                 name: "Branches");
@@ -612,6 +593,9 @@ namespace ArgosApi.Migrations
 
             migrationBuilder.DropTable(
                 name: "Departments");
+
+            migrationBuilder.DropTable(
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "Companies");

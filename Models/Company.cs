@@ -17,11 +17,13 @@ public class Company : EntityBase
     public required string PhoneNumber { get; set; }
 
     // System Data
-    [MaxLength(100)]
+    [MaxLength(200)]
     public required string Nickname { get; set; }
-    [MaxLength(150)]
+    [MaxLength(200)]
     [EmailAddress]
     public required string Email { get; set; }
+
+    public required string PasswordHash { get; set; }
 
     // Location
     public string? AddressLine1 { get; set; }
