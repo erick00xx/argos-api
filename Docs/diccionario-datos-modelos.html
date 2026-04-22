@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ArgosApi - Diccionario de Datos (Models)</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #121935;
+      --panel-2: #0f1730;
+      --text: #e9eefc;
+      --muted: #aab6da;
+      --accent: #5b8cff;
+      --ok: #2ecc71;
+      --warn: #f1c40f;
+      --line: #253158;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
+      background: linear-gradient(180deg, var(--bg), #070b17);
+      color: var(--text);
+      line-height: 1.45;
+    }
+    .wrap {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    .hero {
+      background: linear-gradient(135deg, #1a2550, #111a38);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+    h1, h2, h3 { margin: 0 0 10px; }
+    h1 { font-size: 1.6rem; }
+    h2 {
+      margin-top: 28px;
+      font-size: 1.25rem;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--line);
+    }
+    h3 { margin-top: 18px; font-size: 1.05rem; color: #cdd8ff; }
+    p, li { color: var(--muted); }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
+      margin: 14px 0 6px;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+    }
+    .chip {
+      display: inline-block;
+      border: 1px solid #32437a;
+      color: #dbe5ff;
+      background: #172247;
+      border-radius: 999px;
+      padding: 2px 10px;
+      font-size: .78rem;
+      margin-right: 6px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0 18px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--panel-2);
+    }
+    th, td {
+      border-bottom: 1px solid var(--line);
+      padding: 9px 10px;
+      text-align: left;
+      vertical-align: top;
+      font-size: .92rem;
+    }
+    th {
+      background: #19264f;
+      color: #eaf0ff;
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    tr:hover td { background: #13204a; }
+    .yes { color: #ff9aa2; font-weight: 600; }
+    .no  { color: var(--ok); font-weight: 600; }
+    .small { font-size: .82rem; color: #9fb1e8; }
+    .toc a {
+      color: #bcd0ff;
+      text-decoration: none;
+    }
+    .toc a:hover { color: #fff; text-decoration: underline; }
+    .note {
+      background: #131e44;
+      border: 1px solid #2e3f79;
+      border-left: 4px solid var(--accent);
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin: 10px 0;
+    }
+    code {
+      color: #d2defe;
+      background: #151f44;
+      border: 1px solid #2a3a71;
+      border-radius: 6px;
+      padding: 1px 6px;
+      font-size: .85rem;
+    }
+    .footer {
+      border-top: 1px solid var(--line);
+      margin-top: 26px;
+      padding-top: 14px;
+      color: #91a5dc;
+      font-size: .84rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <h1>Diccionario de Datos - ArgosApi (Models)</h1>
+      <p>Documento generado desde la carpeta <strong>Models</strong> y enums usados por los modelos.</p>
+      <div>
+        <span class="chip">Proyecto: ArgosApi</span>
+        <span class="chip">Fecha: 2026-04-22</span>
+        <span class="chip">Formato: HTML</span>
+      </div>
+      <div class="note">
+        <strong>Entidad base heredada por todos los modelos:</strong>
+        <ul>
+          <li><code>Id</code> (Guid, PK, identity)</li>
+          <li><code>CreatedAt</code> (DateTime)</li>
+          <li><code>CreatedBy</code> (Guid?)</li>
+          <li><code>UpdatedAt</code> (DateTime?)</li>
+          <li><code>UpdatedBy</code> (Guid?)</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="card toc">
+      <h3>Índice de entidades</h3>
+      <div class="grid">
+        <div>
+          <a href="#attendance">Attendance</a><br>
+          <a href="#biometrictemplate">BiometricTemplate</a><br>
+          <a href="#branch">Branch</a><br>
+          <a href="#clockprofile">ClockProfile</a><br>
+          <a href="#company">Company</a><br>
+          <a href="#companyalias">CompanyAlias</a><br>
+        </div>
+        <div>
+          <a href="#department">Department</a><br>
+          <a href="#device">Device</a><br>
+          <a href="#employee">Employee</a><br>
+          <a href="#employeeshift">EmployeeShift</a><br>
+          <a href="#schedule">Schedule</a><br>
+          <a href="#shift">Shift</a><br>
+        </div>
+        <div>
+          <a href="#shiftdetail">ShiftDetail</a><br>
+          <a href="#user">User</a><br>
+          <a href="#enums">Enums</a>
+        </div>
+      </div>
+    </section>
+
+    <h2 id="attendance">Attendance</h2>
+    <table>
+      <thead><tr><th>Campo</th><th>Tipo C#</th><th>Nulo</th><th>Restricciones / Valores</th><th>Notas</th></tr></thead>
+      <tbody>
+        <tr><td>EmployeeId</td><td>Guid</td><td class="no">No</td><td>FK - Employee</td><td>Empleado dueño de la marcación</td></tr>
+        <tr><td>DeviceId</td><td>Guid?</td><td class="yes">Sí</td><td>FK - Device</td><td>Nulo si viene de otra fuente</td></tr>
+        <tr><td>PunchDateTime</td><td>DateTime</td><td class="no">No</td><td>-</td><td>Fecha/hora exacta del punch</td></tr>
+        <tr><td>PunchType</td><td>AttendancePunchType</td><td class="no">No</td><td>Enum</td><td>Tipo de marcación</td></tr>
+        <tr><td>Source</td><td>AttendanceSource</td><td class="no">No</td><td>Enum</td><td>Origen</td></tr>
+        <tr><td>Method</td><td>AttendanceMethod</td><td class="no">No</td><td>Enum</td><td>Método biométrico o contraseña</td></tr>
+        <tr><td>IsValid</td><td>bool</td><td class="no">No</td><td>Default: true</td><td>Validez de la marcación</td></tr>
+        <tr><td>RawClockUserId</td><td>string?</td><td class="yes">Sí</td><td>MaxLength(50)</td><td>Id crudo del reloj</td></tr>
+        <tr><td>Checksum</td><td>string?</td><td class="yes">Sí</td><td>MaxLength(100)</td><td>Conciliación</td></tr>
+        <tr><td>Location</td><td>string?</td><td class="yes">Sí</td><td>MaxLength(250)</td><td>Ubicación textual</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="biometrictemplate">BiometricTemplate</h2>
+    <table>
+      <thead><tr><th>Campo</th><th>Tipo C#</th><th>Nulo</th><th>Restricciones / Valores</th><th>Notas</th></tr></thead>
+      <tbody>
+        <tr><td>EmployeeId</td><td>Guid</td><td class="no">No</td><td>FK - Employee</td><td>Empleado propietario</td></tr>
+        <tr><td>Type</td><td>BiometricType</td><td class="no">No</td><td>Enum</td><td>Huella/rostro</td></tr>
+        <tr><td>FingerIndex</td><td>int?</td><td class="yes">Sí</td><td>-</td><td>Índice según fabricante</td></tr>
+        <tr><td>TemplateData</td><td>byte[]</td><td class="no">No</td><td>Binario</td><td>Datos reales de plantilla</td></tr>
+        <tr><td>Format</td><td>string?</td><td class="yes">Sí</td><td>MaxLength(50)</td><td>Formato del template</td></tr>
+        <tr><td>Quality</td><td>int?</td><td class="yes">Sí</td><td>-</td><td>Calidad de captura</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="branch">Branch</h2>
+    <table>
+      <thead><tr><th>Campo</th><th>Tipo C#</th><th>Nulo</th><th>Restricciones / Valores</th><th>Notas</th></tr></thead>
+      <tbody>
+        <tr><td>CompanyId</td><td>Guid</td><td class="no">No</td><td>FK - Company</td><td>Compañía dueña</td></tr>
+        <tr><td>Name</td><td>string</td><td class="no">No</td><td>required, MaxLength(150)</td><td>Nombre de sede</td></tr>
+        <tr><td>TimeZone</td><td>string</td><td class="no">No</td><td>required, MaxLength(50)</td><td>Zona horaria</td></tr>
+        <tr><td>AddressLine1</td><td>string</td><td class="no">No</td><td>required, MaxLength(200)</td><td>Dirección principal</td></tr>
+        <tr><td>Description</td><td>string</td><td class="no">No</td><td>required, MaxLength(250)</td><td>Descripción</td></tr>
+        <tr><td>IsActive</td><td>bool</td><td class="no">No</td><td>Default: true</td><td>Estado</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="clockprofile">ClockProfile</h2>
+    <div class="small">Índice único: EmployeeId</div>
+    <table>
+      <thead><tr><th>Campo</th><th>Tipo C#</th><th>Nulo</th><th>Restricciones / Valores</th><th>Notas</th></tr></thead>
+      <tbody>
+        <tr><td>EmployeeId</td><td>Guid</td><td class="no">No</td><td>FK - Employee</td><td>1 a 1 con empleado</td></tr>
+        <tr><td>IsAttendanceTracked</td><td>bool</td><td class="no">No</td><td>Default: true</td><td>Controlar asistencia</td></tr>
+        <tr><td>EnrolledId</td><td>string</td><td class="no">No</td><td>required, MaxLength(50)</td><td>ID usado por reloj</td></tr>
+        <tr><td>ClockName</td><td>string</td><td class="no">No</td><td>required, MaxLength(100)</td><td>Nombre en reloj</td></tr>
+        <tr><td>ClockPrivilege</td><td>bool</td><td class="no">No</td><td>Default: false</td><td>Privilegios en reloj</td></tr>
+        <tr><td>IsPasswordAllowed</td><td>bool</td><td class="no">No</td><td>Default: false</td><td>Uso de contraseña</td></tr>
+        <tr><td>ClockPasswordHash</td><td>string?</td><td class="yes">Sí</td><td>MaxLength(200)</td><td>Hash de contraseña</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="company">Company</h2>
+    <table>
+      <thead><tr><th>Campo</th><th>Tipo C#</th><th>Nulo</th><th>Restricciones / Valores</th><th>Notas</th></tr></thead>
+      <tbody>
+        <tr><td>CompanyName</td><td>string</td><td class="no">No</td><td>required, MaxLength(200)</td><td>Razón social</td></tr>
+        <tr><td>TaxType</td><td>TaxIdType</td><td class="no">No</td><td>Enum</td><td>Tipo de identificación fiscal</td></tr>
+        <tr><td>TaxId</td><td>string</td><td class="no">No</td><td>required, MaxLength(30)</td><td>Número fiscal</td></tr>
+        <tr><td>BusinessLine</td><td>string</td><td class="no">No</td><td>required, MaxLength(120)</td><td>Giro de negocio</td></tr>
+        <tr><td>PhoneNumber</td><td>string</td><td class="no">No</td><td>required, MaxLength(30)</td><td>Teléfono principal</td></tr>
+        <tr><td>Nickname</td><td>string</td><td class="no">No</td><td>required, MaxLength(100)</td><td>Alias interno</td></tr>
+        <tr><td>Email</td><td>string</td><td class="no">No</td><td>required, MaxLength(150), EmailAddress</td><td>Email corporativo</td></tr>
+        <tr><td>AddressLine1</td><td>string?</td><td class="yes">Sí</td><td>-</td><td>Dirección 1</td></tr>
+        <tr><td>AddressLine2</td><td>string?</td><td class="yes">Sí</td><td>-</td><td>Dirección 2</td></tr>
+        <tr><td>City</td><td>string?</td><td class="yes">Sí</td><td>-</td><td>Ciudad</td></tr>
+        <tr><td>Country</td><td>string?</td><td class="yes">Sí</td><td>-</td><td>País</td></tr>
+        <tr><td>PostalCode</td><td>string?</td><td class="yes">Sí</td><td>-</td><td>Código postal</td></tr>
+        <tr><td>LegalRepresentativeDocumentType</td><td>DocumentType</td><td class="no">No</td><td>Enum</td><td>Tipo documento representante</td></tr>
+        <tr><td>LegalRepresentativeDocument</td><td>string</td><td class="no">No</td><td>required, MaxLength(30)</td><td>Número documento representante</td></tr>
+        <tr><td>LegalRepresentativeFullName</td><td>string</td><td class="no">No</td><td>required, MaxLength(200)</td><td>Nombre completo representante</td></tr>
+        <tr><td>LegalRepresentativeEmail</td><td>string</td><td class="no">No</td><td>required, MaxLength(150), EmailAddress</td><td>Email representante</td></tr>
+        <tr><td>LegalRepresentativePhone</td><td>string</td><td class="no">No</td><td>required, MaxLength(30)</td><td>Teléfono representante</td></tr>
+        <tr><td>HRManagerName</td><td>string?</td><td class="yes">Sí</td><td>-</td><td>Nombre encargado RRHH</td></tr>
+        <tr><td>HRManagerEmail</td><td>string?</td><td class="yes">Sí</td><td>-</td><td>Email encargado RRHH</td></tr>
+        <tr><td>HRDirectorName</td><td>string?</td><td class="yes">Sí</td><td>-</td><td>Nombre director RRHH</td></tr>
+        <tr><td>HRDirectorEmail</td><td>string?</td><td class="yes">Sí</td><td>-</td><td>Email director RRHH</td></tr>
+        <tr><td>IsActive</td><td>bool</td><td class="no">No</td><td>Default: true</td><td>Estado</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="companyalias">CompanyAlias</h2>
+    <table>
+      <thead><tr><th>Campo</th><th>Tipo C#</th><th>Nulo</th><th>Restricciones / Valores</th><th>Notas</th></tr></thead>
+      <tbody>
+        <tr><td>CompanyId</td><td>Guid</td><td class="no">No</td><td>FK - Company</td><td>Compañía asociada</td></tr>
+        <tr><td>Name</td><td>string</td><td class="no">No</td><td>required, MaxLength(200)</td><td>Nombre comercial alterno</td></tr>
+        <tr><td>TaxType</td><td>TaxIdType</td><td class="no">No</td><td>Enum</td><td>Tipo fiscal</td></tr>
+        <tr><td>TaxId</td><td>string</td><td class="no">No</td><td>required, MaxLength(30)</td><td>Número fiscal</td></tr>
+        <tr><td>LegalRepresentativeDocumentType</td><td>DocumentType</td><td class="no">No</td><td>Enum</td><td>Documento representante</td></tr>
+        <tr><td>LegalRepresentativeDocument</td><td>string</td><td class="no">No</td><td>required, MaxLength(30)</td><td>Número documento representante</td></tr>
+        <tr><td>LegalRepresentativeName</td><td>string</td><td class="no">No</td><td>required, MaxLength(200)</td><td>Nombre representante</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="department">Department</h2>
+    <table>
+      <thead><tr><th>Campo</th><th>Tipo C#</th><th>Nulo</th><th>Restricciones / Valores</th><th>Notas</th></tr></thead>
+      <tbody>
+        <tr><td>CompanyId</td><td>Guid</td><td class="no">No</td><td>FK - Company</td><td>Compañía dueña</td></tr>
+        <tr><td>Name</td><td>string</td><td class="no">No</td><td>required, MaxLength(120)</td><td>Nombre de departamento</td></tr>
+        <tr><td>Description</td><td>string</td><td class="no">No</td><td>required, MaxLength(250)</td><td>Descripción</td></tr>
+        <tr><td>IsActive</td><td>bool</td><td class="no">No</td><td>Default: true</td><td>Estado</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="device">Device</h2>
+    <table>
+      <thead><tr><th>Campo</th><th>Tipo C#</th><th>Nulo</th><th>Restricciones / Valores</th><th>Notas</th></tr></thead>
+      <tbody>
+        <tr><td>IsActive</td><td>bool</td><td class="no">No</td><td>Default: true</td><td>Estado del reloj</td></tr>
+        <tr><td>ClockNumber</td><td>int</td><td class="no">No</td><td>-</td><td>ID interno del reloj</td></tr>
+        <tr><td>Name</td><td>string</td><td class="no">No</td><td>required, MaxLength(120)</td><td>Nombre del dispositivo</td></tr>
+        <tr><td>BranchId</td><td>Guid</td><td class="no">No</td><td>FK - Branch</td><td>Sede asociada</td></tr>
+        <tr><td>TimeZone</td><td>string?</td><td class="yes">Sí</td><td>MaxLength(50)</td><td>Zona horaria</td></tr>
+        <tr><td>Manufacturer</td><td>string</td><td class="no">No</td><td>required, MaxLength(80)</td><td>Fabricante</td></tr>
+        <tr><td>Model</td><td>string</td><td class="no">No</td><td>required, MaxLength(80)</td><td>Modelo</td></tr>
+        <tr><td>SerialNumber</td><td>string</td><td class="no">No</td><td>required, MaxLength(120)</td><td>Serie única de hardware</td></tr>
+        <tr><td>FingerprintAlgorithmVersion</td><td>string?</td><td class="yes">Sí</td><td>MaxLength(20)</td><td>Versión algoritmo huella</td></tr>
+        <tr><td>GenerateConnectionAlert</td><td>bool</td><td class="no">No</td><td>Default: false</td><td>Alerta de desconexión</td></tr>
+        <tr><td>LimitOneFingerprintPerEmployee</td><td>bool</td><td class="no">No</td><td>Default: false</td><td>Una huella por empleado</td></tr>
+        <tr><td>IpAddress</td><td>string?</td><td class="yes">Sí</td><td>MaxLength(45)</td><td>IP local</td></tr>
+        <tr><td>Gateway</td><td>string?</td><td class="yes">Sí</td><td>MaxLength(45)</td><td>Gateway</td></tr>
+        <tr><td>Dns</td><td>string?</td><td class="yes">Sí</td><td>MaxLength(100)</td><td>DNS</td></tr>
+        <tr><td>LastConnectionDate</td><td>DateTime?</td><td class="yes">Sí</td><td>-</td><td>Última conexión</td></tr>
+        <tr><td>AttendanceLogCount</td><td>int</td><td class="no">No</td><td>Default: 0</td><td>Cantidad de marcaciones</td></tr>
+        <tr><td>UserCount</td><td>int</td><td class="no">No</td><td>Default: 0</td><td>Usuarios cargados</td></tr>
+        <tr><td>FingerprintCount</td><td>int</td><td class="no">No</td><td>Default: 0</td><td>Huellas cargadas</td></tr>
+        <tr><td>FaceCount</td><td>int</td><td class="no">No</td><td>Default: 0</td><td>Rostros cargados</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="employee">Employee</h2>
+    <table>
+      <thead><tr><th>Campo</th><th>Tipo C#</th><th>Nulo</th><th>Restricciones / Valores</th><th>Notas</th></tr></thead>
+      <tbody>
+        <tr><td>DepartmentId</td><td>Guid</td><td class="no">No</td><td>FK - Department</td><td>Departamento</td></tr>
+        <tr><td>BranchId</td><td>Guid</td><td class="no">No</td><td>FK - Branch</td><td>Sede</td></tr>
+        <tr><td>CompanyId</td><td>Guid</td><td class="no">No</td><td>FK - Company</td><td>Compañía</td></tr>
+        <tr><td>AliasId</td><td>Guid?</td><td class="yes">Sí</td><td>FK - CompanyAlias</td><td>Alias legal/comercial opcional</td></tr>
+        <tr><td>RegistrationDate</td><td>DateTime</td><td class="no">No</td><td>-</td><td>Fecha de registro</td></tr>
+        <tr><td>DocumentType</td><td>DocumentType</td><td class="no">No</td><td>Enum</td><td>Tipo de documento</td></tr>
+        <tr><td>Document</td><td>string</td><td class="no">No</td><td>required, MaxLength(30)</td><td>Número documento</td></tr>
+        <tr><td>FileCode</td><td>string?</td><td class="yes">Sí</td><td>MaxLength(30)</td><td>Código ficha</td></tr>
+        <tr><td>FirstName</td><td>string</td><td class="no">No</td><td>required, MaxLength(100)</td><td>Nombres</td></tr>
+        <tr><td>LastName</td><td>string</td><td class="no">No</td><td>required, MaxLength(100)</td><td>Apellidos</td></tr>
+        <tr><td>BirthDate</td><td>DateTime</td><td class="no">No</td><td>-</td><td>Fecha de nacimiento</td></tr>
+        <tr><td>Gender</td><td>string?</td><td class="yes">Sí</td><td>MaxLength(20)</td><td>Género</td></tr>
+        <tr><td>Nationality</td><td>string?</td><td class="yes">Sí</td><td>MaxLength(100)</td><td>Nacionalidad</td></tr>
+        <tr><td>OriginCountry</td><td>string?</td><td class="yes">Sí</td><td>MaxLength(100)</td><td>País de origen</td></tr>
+        <tr><td>PersonalEmail</td><td>string?</td><td class="yes">Sí</td><td>MaxLength(150), EmailAddress</td><td>Email personal</td></tr>
+        <tr><td>IsPersonalEmailVerified</td><td>bool</td><td class="no">No</td><td>Default: false</td><td>Verificación email personal</td></tr>
+        <tr><td>CorporateEmail</td><td>string?</td><td class="yes">Sí</td><td>MaxLength(150), EmailAddress</td><td>Email corporativo</td></tr>
+        <tr><td>AddressLine1</td><td>string?</td><td class="yes">Sí</td><td>MaxLength(200)</td><td>Dirección 1</td></tr>
+        <tr><td>AddressLine2</td><td>string?</td><td class="yes">Sí</td><td>MaxLength(200)</td><td>Dirección 2</td></tr>
+        <tr><td>City</td><td>string?</td><td class="yes">Sí</td><td>MaxLength(100)</td><td>Ciudad</td></tr>
+        <tr><td>HomePhone</td><td>string?</td><td class="yes">Sí</td><td>MaxLength(30)</td><td>Teléfono fijo</td></tr>
+        <tr><td>MobilePhone</td><td>string?</td><td class="yes">Sí</td><td>MaxLength(30)</td><td>Teléfono móvil</td></tr>
+        <tr><td>IsPhoneVerified</td><td>bool</td><td class="no">No</td><td>Default: false</td><td>Verificación teléfono</td></tr>
+        <tr><td>ContractStartDate</td><td>DateTime</td><td class="no">No</td><td>-</td><td>Inicio de contrato</td></tr>
+        <tr><td>ContractEndDate</td><td>DateTime?</td><td class="yes">Sí</td><td>-</td><td>Fin de contrato</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="employeeshift">EmployeeShift</h2>
+    <div class="small">Índice: EmployeeId + StartDate + EndDate</div>
+    <table>
+      <thead><tr><th>Campo</th><th>Tipo C#</th><th>Nulo</th><th>Restricciones / Valores</th><th>Notas</th></tr></thead>
+      <tbody>
+        <tr><td>EmployeeId</td><td>Guid</td><td class="no">No</td><td>FK - Employee</td><td>Empleado</td></tr>
+        <tr><td>ShiftId</td><td>Guid</td><td class="no">No</td><td>FK - Shift</td><td>Turno asignado</td></tr>
+        <tr><td>StartDate</td><td>DateTime</td><td class="no">No</td><td>-</td><td>Inicio de vigencia</td></tr>
+        <tr><td>EndDate</td><td>DateTime?</td><td class="yes">Sí</td><td>-</td><td>Fin de vigencia; null = indefinido</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="schedule">Schedule</h2>
+    <table>
+      <thead><tr><th>Campo</th><th>Tipo C#</th><th>Nulo</th><th>Restricciones / Valores</th><th>Notas</th></tr></thead>
+      <tbody>
+        <tr><td>Name</td><td>string</td><td class="no">No</td><td>required</td><td>Nombre de horario</td></tr>
+        <tr><td>CalendarColor</td><td>string?</td><td class="yes">Sí</td><td>-</td><td>Color de calendario</td></tr>
+        <tr><td>IsTwoDaySchedule</td><td>bool</td><td class="no">No</td><td>Default: false</td><td>Turno cruza medianoche</td></tr>
+        <tr><td>MinEntryTime</td><td>TimeOnly</td><td class="no">No</td><td>-</td><td>Inicio ventana de entrada</td></tr>
+        <tr><td>TargetEntryTime</td><td>TimeOnly</td><td class="no">No</td><td>-</td><td>Hora oficial de entrada</td></tr>
+        <tr><td>MaxEntryTime</td><td>TimeOnly</td><td class="no">No</td><td>-</td><td>Fin ventana de entrada</td></tr>
+        <tr><td>MinExitTime</td><td>TimeOnly</td><td class="no">No</td><td>-</td><td>Inicio ventana de salida</td></tr>
+        <tr><td>TargetExitTime</td><td>TimeOnly</td><td class="no">No</td><td>-</td><td>Hora oficial de salida</td></tr>
+        <tr><td>MaxExitTime</td><td>TimeOnly</td><td class="no">No</td><td>-</td><td>Fin ventana de salida</td></tr>
+        <tr><td>UsesBreak</td><td>bool</td><td class="no">No</td><td>Default: false</td><td>Usa descanso</td></tr>
+        <tr><td>BreakStartTime</td><td>TimeOnly?</td><td class="yes">Sí</td><td>-</td><td>Inicio descanso</td></tr>
+        <tr><td>BreakEndTime</td><td>TimeOnly?</td><td class="yes">Sí</td><td>-</td><td>Fin descanso</td></tr>
+        <tr><td>BreakMinutes</td><td>int</td><td class="no">No</td><td>Default: 0</td><td>Minutos de descanso</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="shift">Shift</h2>
+    <table>
+      <thead><tr><th>Campo</th><th>Tipo C#</th><th>Nulo</th><th>Restricciones / Valores</th><th>Notas</th></tr></thead>
+      <tbody>
+        <tr><td>Name</td><td>string</td><td class="no">No</td><td>required</td><td>Nombre de turno</td></tr>
+        <tr><td>Description</td><td>string?</td><td class="yes">Sí</td><td>-</td><td>Descripción</td></tr>
+        <tr><td>IsActive</td><td>bool</td><td class="no">No</td><td>Default: true</td><td>Estado</td></tr>
+        <tr><td>Period</td><td>string</td><td class="no">No</td><td>required, Default: "Weekly"</td><td>Tipo de período</td></tr>
+        <tr><td>Extension</td><td>int</td><td class="no">No</td><td>Default: 1</td><td>Semanas de ciclo</td></tr>
+        <tr><td>IsFlexible</td><td>bool</td><td class="no">No</td><td>Default: false</td><td>Turno flexible</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="shiftdetail">ShiftDetail</h2>
+    <table>
+      <thead><tr><th>Campo</th><th>Tipo C#</th><th>Nulo</th><th>Restricciones / Valores</th><th>Notas</th></tr></thead>
+      <tbody>
+        <tr><td>ShiftId</td><td>Guid</td><td class="no">No</td><td>FK - Shift</td><td>Turno padre</td></tr>
+        <tr><td>ScheduleId</td><td>Guid</td><td class="no">No</td><td>FK - Schedule</td><td>Horario asociado</td></tr>
+        <tr><td>WeekNumber</td><td>int</td><td class="no">No</td><td>Default: 1</td><td>Semana del ciclo</td></tr>
+        <tr><td>DayOfWeek</td><td>DayOfWeek</td><td class="no">No</td><td>Enum BCL (0-6)</td><td>Día de semana</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="user">User</h2>
+    <table>
+      <thead><tr><th>Campo</th><th>Tipo C#</th><th>Nulo</th><th>Restricciones / Valores</th><th>Notas</th></tr></thead>
+      <tbody>
+        <tr><td>EmployeeId</td><td>Guid?</td><td class="yes">Sí</td><td>FK - Employee</td><td>Usuario puede no vincularse a empleado</td></tr>
+        <tr><td>UserName</td><td>string</td><td class="no">No</td><td>required, MaxLength(80)</td><td>Nombre de usuario</td></tr>
+        <tr><td>PasswordHash</td><td>string</td><td class="no">No</td><td>required, MaxLength(200)</td><td>Hash de contraseña</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="enums">Enums usados en modelos</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>AttendanceMethod</h3>
+        <ul>
+          <li>0 = Unknown</li>
+          <li>1 = FingerPrint</li>
+          <li>3 = Password</li>
+          <li>15 = Face</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>AttendancePunchType</h3>
+        <ul>
+          <li>0 = CheckIn</li>
+          <li>1 = CheckOut</li>
+          <li>2 = BreakStart</li>
+          <li>3 = BreakEnd</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>AttendanceSource</h3>
+        <ul>
+          <li>0 = Unknown</li>
+          <li>1 = Manual</li>
+          <li>2 = Device</li>
+          <li>3 = Web</li>
+          <li>4 = Mobile</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>BiometricType</h3>
+        <ul>
+          <li>0 = Unknown</li>
+          <li>1 = FingerPrint</li>
+          <li>15 = Face</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>DocumentType</h3>
+        <ul>
+          <li>0 = Unknown</li>
+          <li>1 = DNI</li>
+          <li>2 = Passport</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>TaxIdType</h3>
+        <ul>
+          <li>0 = Unknown</li>
+          <li>1 = RUC</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer">
+      Generado desde clases de dominio en <strong>Models</strong> + enums relacionados. 
+      Nota: La propiedad <code>Manufacturer</code> en <code>Device</code> está definida como <code>string</code> aunque existe enum <code>Manufacturer</code>.
+    </div>
+  </div>
+</body>
+</html>
