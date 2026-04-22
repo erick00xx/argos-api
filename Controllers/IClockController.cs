@@ -16,6 +16,11 @@ public class IClockController : ControllerBase
     {
         _clockDataProcessor = clockDataProcessor;
     }
+    [HttpGet("ping")]
+    public IActionResult Ping()
+    {
+        return Content("OK", "text/plain");
+    }
 
     [HttpGet("cdata")]
     public async Task<IActionResult> InitDevice([FromQuery] InitDeviceRequest request) // Initialize device.
