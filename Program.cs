@@ -13,6 +13,15 @@ builder.Services.AddScoped<ClockDataProcessor>();
 builder.Services.AddScoped<IAuthService, AuthService>(); // Add AuthService
 
 // Add services to the container.
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:4173")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -85,6 +94,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Use CORS policy
+app.UseCors("AllowFrontend");
 
 // Use Authentication and Authorization middleware
 app.UseAuthentication();
