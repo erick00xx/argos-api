@@ -37,6 +37,7 @@ builder.Services.AddSwaggerGen(c =>
     {
         { securityScheme, Array.Empty<string>() }
     });
+    c.EnableAnnotations(); // Enable Swagger annotations for better documentation
 });
 
 // Configure JWT Authentication
@@ -66,6 +67,7 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddAuthorization();
+builder.Services.AddHttpContextAccessor(); // Add HttpContextAccessor for accessing user information in services
 
 // Configure Entity Framework with PostgreSQL
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
