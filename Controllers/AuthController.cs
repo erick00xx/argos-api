@@ -1,4 +1,4 @@
-using ArgosApi.Services.Interfaces;
+using ArgosApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,14 +19,14 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        var token = await _authService.LoginAsync(request.Document, request.Password);
+        var response = await _authService.LoginAsync(request.Document, request.Password);
 
-        if (token == null)
+        if (response == null)
         {
-            return Unauthorized(new { message = "Credenciales incorrectas." });
+            return Unauthorized(new { message = "Invalid credentials." }); // In English
         }
 
-        return Ok(new { token });
+        return Ok(response);
     }
 }
 

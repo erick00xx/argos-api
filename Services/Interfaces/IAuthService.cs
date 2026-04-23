@@ -1,6 +1,8 @@
-namespace ArgosApi.Services.Interfaces;
+using ArgosApi.Dtos;
+
+namespace ArgosApi.Services;
 
 public interface IAuthService
 {
-    Task<string?> LoginAsync(string document, string password);
+    Task<AuthEmployeeDto?> LoginAsync(string document, string password);
 }

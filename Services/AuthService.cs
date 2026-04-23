@@ -2,7 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using ArgosApi.Data;
-using ArgosApi.Services.Interfaces;
+using ArgosApi.Dtos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
@@ -19,7 +19,7 @@ public class AuthService : IAuthService
         _configuration = configuration;
     }
 
-    public async Task<string?> LoginAsync(string document, string password)
+    public async Task<AuthEmployeeDto?> LoginAsync(string document, string password)
     {
         // Se busca el empleado por el Document y PasswordHash en texto plano (como fue solicitado)
         var employee = await _context.Set<Models.Employee>()
@@ -40,6 +40,7 @@ public class AuthService : IAuthService
             {
                 new Claim(ClaimTypes.NameIdentifier, employee.Id.ToString()),
                 new Claim(ClaimTypes.Name, $"{employee.FirstName} {employee.LastName}"),
+                new Claim(ClaimTypes.Role, employee.attWebAllowed ? "AttWebAllowed" : "NotAttWebAllowed"), 
                 new Claim("Document", employee.Document),
                 new Claim("CompanyId", employee.CompanyId.ToString())
             }),
@@ -54,7 +55,12 @@ public class AuthService : IAuthService
 
         var tokenHandler = new JwtSecurityTokenHandler();
         var token = tokenHandler.CreateToken(tokenDescriptor);
+        var response = new AuthEmployeeDto
+        {
+            Token = tokenHandler.WriteToken(token),
+            Employee = employee
+        };
 
-        return tokenHandler.WriteToken(token);
+        return response;
     }
 }

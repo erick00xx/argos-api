@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using ArgosApi.Data;
 using ArgosApi.Handlers;
 using ArgosApi.Services;
-using ArgosApi.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
