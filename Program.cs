@@ -11,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IAttendanceService, AttendanceService>();
 builder.Services.AddScoped<ClockDataProcessor>();
 builder.Services.AddScoped<IAuthService, AuthService>(); // Add AuthService
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 
 // Add services to the container.
 builder.Services.AddCors(options =>

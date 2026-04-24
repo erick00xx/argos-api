@@ -12,7 +12,6 @@ public class Employee : EntityBase
     public Guid CompanyId { get; set; }
     public Guid? AliasId { get; set; }
 
-    public DateTime RegistrationDate { get; set; }
     public DocumentType DocumentType { get; set; }
     // Documento real del empleado (DNI, CE, etc.)
     [MaxLength(30)]
@@ -27,11 +26,11 @@ public class Employee : EntityBase
     public required string FirstName { get; set; }
     [MaxLength(100)]
     public required string LastName { get; set; }
-    public DateTime BirthDate { get; set; }
+    [MaxLength(120)]
+    public string? Profession { get; set; }
+    public DateTime? BirthDate { get; set; }
     [MaxLength(20)]
     public string? Gender { get; set; }
-    [MaxLength(100)]
-    public string? Nationality { get; set; }
     [MaxLength(100)]
     public string? OriginCountry { get; set; }
     [MaxLength(150)]
@@ -63,7 +62,7 @@ public class Employee : EntityBase
     [MaxLength(20)]
     public string? ClockPasswordHash { get; set; }
 
-    public DateTime ContractStartDate { get; set; }
+    public DateTime? ContractStartDate { get; set; }
     public DateTime? ContractEndDate { get; set; }
 
     [ForeignKey(nameof(DepartmentId))]
