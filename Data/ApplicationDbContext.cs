@@ -24,6 +24,8 @@ public class ApplicationDbContext : DbContext
     public DbSet<Attendance> Attendances => Set<Attendance>();
     public DbSet<User> Users => Set<User>();
     public DbSet<BiometricTemplate> BiometricTemplates => Set<BiometricTemplate>();
+    public DbSet<Role> Roles => Set<Role>();
+    public DbSet<UserRole> UserRoles => Set<UserRole>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -73,6 +75,22 @@ public class ApplicationDbContext : DbContext
                 .HasForeignKey(e => e.DeviceId)
                 .OnDelete(DeleteBehavior.SetNull);
 
+        });
+
+        modelBuilder.Entity<UserRole>(entity =>
+        {
+            entity.HasIndex(x => new { x.UserId, x.RoleId })
+                .IsUnique();
+
+            entity.HasOne(x => x.User)
+                .WithMany(x => x.UserRoles)
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(x => x.Role)
+                .WithMany(x => x.UserRoles)
+                .HasForeignKey(x => x.RoleId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
     }
