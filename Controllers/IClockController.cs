@@ -32,7 +32,7 @@ public class IClockController : ControllerBase
     public async Task<IActionResult> GetRequest([FromQuery] DeviceGetRequest request)
     {
 
-        
+
         return Content("OK", "text/plain");
     }
 
@@ -42,9 +42,12 @@ public class IClockController : ControllerBase
         using var reader = new StreamReader(Request.Body, System.Text.Encoding.UTF8, leaveOpen: false);
         var body = await reader.ReadToEndAsync();
 
-        await _clockDataProcessor.ProcessClockDataAsync(request.SN, request.table, body);
+        var success = await _clockDataProcessor.ProcessClockDataAsync(request.SN, request.table, body);
 
-        return Content("OK", "text/plain");
+        if (success)
+            return Content("OK", "text/plain");
+
+        return StatusCode(500, "Error processing data");
     }
 
 }

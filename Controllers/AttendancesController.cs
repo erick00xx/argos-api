@@ -64,7 +64,7 @@ public class AttendancesController : ControllerBase
     }
 
     [HttpGet("all")]
-    [Authorize]
+    [Authorize(Policy = "view:attendances")]
     [SwaggerOperation(Summary = "Obtener marcaciones de todos los empleados", Description = "Obtiene todas las marcaciones y por id de empleado (por ahora, luego sera por nombre, fechas, y mas filtros)")]
     public async Task<IActionResult> GetAllAttendances(
         [FromQuery] Guid? employeeId = null,

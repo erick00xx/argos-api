@@ -455,4 +455,53 @@ public class EmployeeService : IEmployeeService
 
         return new string(value.Trim().ToLowerInvariant().Where(c => !char.IsWhiteSpace(c) && c != '_' && c != '-').ToArray());
     }
+
+    public async Task<PagedResult<List<EmployeeDto>>> GetPagedAsync(Guid companyId, EmployeeRequestDto request, int pageNumber = 1, int pageSize = 10)
+    {
+        try
+        {
+            pageNumber = Math.Max(pageNumber, 1);
+            pageSize = Math.Clamp(pageSize, 1, 100);
+
+            IQueryable<Employee>? baseQuery = _context.Employees
+                .AsNoTracking()
+                .Where(e => e.CompanyId == companyId)
+                .Where(e =>
+                (string.IsNullOrWhiteSpace(request.EnrolledId) || e.EnrolledId.Contains(request.EnrolledId)) &&
+                (string.IsNullOrWhiteSpace(request.Document) || e.Document.Contains(request.Document)) &&
+                (string.IsNullOrWhiteSpace(request.FirstName) || e.FirstName.ToLower().Contains(request.FirstName.ToLower())) &&
+                (string.IsNullOrWhiteSpace(request.LastName) || e.LastName.ToLower().Contains(request.LastName.ToLower())) &&
+                (string.IsNullOrWhiteSpace(request.BranchName) || e.Branch.Name.ToLower().Contains(request.BranchName.ToLower())) &&
+                (string.IsNullOrWhiteSpace(request.DepartmentName) || e.Department.Name.ToLower().Contains(request.DepartmentName.ToLower())) &&
+                (!request.Status.HasValue || e.IsActive == request.Status.Value)
+                );
+
+            var totalRecords = await baseQuery.CountAsync();
+
+            var employees = await baseQuery
+                .OrderBy(e => e.FirstName)
+                .ThenBy(e => e.LastName)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(e => new EmployeeDto
+                {
+                    Id = e.Id,
+                    EnrolledId = e.EnrolledId,
+                    DocumentType = e.DocumentType.ToString(),
+                    DocumentNumber = e.Document,
+                    FirstName = e.FirstName,
+                    LastName = e.LastName,
+                    BranchName = e.Branch.Name,
+                    DepartmentName = e.Department.Name,
+                    IsActive = e.IsActive
+                }).ToListAsync();
+
+            return PagedResult<List<EmployeeDto>>.Ok(employees, pageNumber, pageSize, totalRecords);
+        }
+        catch (System.Exception)
+        {
+
+            throw;
+        }
+    }
 }

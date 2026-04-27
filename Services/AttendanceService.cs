@@ -78,10 +78,10 @@ public class AttendanceService : IAttendanceService
         _context.Attendances.AddRange(recordsToInsert);
 
 
-        await _context.SaveChangesAsync();
+        if (await _context.SaveChangesAsync() > 0)
+            return true;
 
-        return true;
-
+        return false;
     }
 
     public async Task<bool> SaveSingleAttendanceAsync(AttendanceLogDto attendance)
@@ -122,9 +122,11 @@ public class AttendanceService : IAttendanceService
         var newAttendance = MapToAttendance(attendance, employeeId.Value, deviceId, deviceTimeZone, location);
 
         _context.Attendances.Add(newAttendance);
-        await _context.SaveChangesAsync();
 
-        return true;
+        if (await _context.SaveChangesAsync() > 0)
+            return true;
+
+        return false;
     }
 
     private Attendance MapToAttendance(AttendanceLogDto dto, Guid employeeId, Guid? deviceId, string? deviceTimeZone, string? location)
@@ -287,7 +289,7 @@ public class AttendanceService : IAttendanceService
     public async Task<Result<AttendanceDetailDto>> GetAttendanceDetailAsync(Guid attendanceId, Guid employeeId)
     {
         var row = await _context.Attendances
-            .Where(a => a.Id == attendanceId && a.EmployeeId == employeeId)
+            .Where(a => a.Id == attendanceId)
             .Select(a => new
             {
                 Id = a.Id,

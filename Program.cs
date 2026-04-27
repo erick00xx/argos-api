@@ -12,15 +12,21 @@ builder.Services.AddScoped<IAttendanceService, AttendanceService>();
 builder.Services.AddScoped<ClockDataProcessor>();
 builder.Services.AddScoped<IAuthService, AuthService>(); // Add AuthService
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+builder.Services.AddScoped<IBranchService, BranchService>();
+builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+builder.Services.AddScoped<IReportService, ReportService>();
 
 // Add services to the container.
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:4173")
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+        policy.WithOrigins(
+                "http://localhost:4173",
+                "http://localhost:4174"
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod();
     });
 });
 builder.Services.AddControllers();
@@ -76,7 +82,15 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(
+    options =>
+    {
+        options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+        options.AddPolicy("view:attendances", policy => policy.RequireClaim("permission", "view:attendances"));
+        options.AddPolicy("create:users", policy => policy.RequireClaim("permission", "create:users"));
+        options.AddPolicy("view:all", policy => policy.RequireClaim("permission", "view:all"));
+    }
+);
 builder.Services.AddHttpContextAccessor(); // Add HttpContextAccessor for accessing user information in services
 
 // Configure Entity Framework with PostgreSQL

@@ -126,7 +126,8 @@ public class AuthService : IAuthService
                 new Claim(ClaimTypes.Name, $"{employee.FirstName} {employee.LastName}"),
                 // new Claim(ClaimTypes.Role, employee.attWebAllowed ? "AttWebAllowed" : "NotAttWebAllowed"), 
                 new Claim("Document", employee.Document),
-                new Claim("CompanyId", employee.CompanyId.ToString())
+                new Claim("CompanyId", employee.CompanyId.ToString()),
+                new Claim("AttWebAllowed", employee.attWebAllowed ? "true" : "false") // Agrega un claim específico para attWebAllowed
             }),
             Expires = DateTime.UtcNow.AddHours(8), // Token con validez de 8 horas
             SigningCredentials = new SigningCredentials(

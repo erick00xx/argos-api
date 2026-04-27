@@ -64,6 +64,7 @@ public class Employee : EntityBase
 
     public DateTime? ContractStartDate { get; set; }
     public DateTime? ContractEndDate { get; set; }
+    public bool IsActive { get; set; } = true;
 
     [ForeignKey(nameof(DepartmentId))]
     public Department Department { get; set; } = null!;
@@ -74,8 +75,6 @@ public class Employee : EntityBase
     [ForeignKey(nameof(AliasId))]
     public CompanyAlias? Alias { get; set; }
 
-    // Perfil de enrolamiento/control en reloj (1 a 1)
-    public User? User { get; set; }
     public ICollection<EmployeeShift> EmployeeShifts { get; set; } = new List<EmployeeShift>();
     public ICollection<Attendance> Attendances { get; set; } = new List<Attendance>();
     public ICollection<BiometricTemplate> BiometricTemplates { get; set; } = new List<BiometricTemplate>();
