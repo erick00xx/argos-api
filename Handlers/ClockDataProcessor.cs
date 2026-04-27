@@ -31,15 +31,18 @@ public class ClockDataProcessor
                 if (usuarios.Any())
                     // await _usuarioService.ActualizarUsuariosDelReloj(usuarios, sn);
                     Console.WriteLine($"Procesar {usuarios.Count} usuarios para el reloj {sn}");
-                break;
+                return true; // Retorna true para simular que se procesó correctamente, aunque la lógica real aún no esté implementada
+                // break;
 
             case "BIODATA":
                 // Lógica de huellas...
-                break;
+                return true; // Retorna true para simular que se procesó correctamente, aunque la lógica real aún no esté implementada
+                // break;
 
             default:
                 Console.WriteLine($"Lógica no implementada para la tabla: {table} del reloj {sn} con el body: {body}");
-                break;
+                return true; // Retorna true para evitar reintentos en tablas no implementadas, pero loguea la situación para futuras implementaciones
+
         }
         return false;
     }
