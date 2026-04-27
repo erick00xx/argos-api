@@ -25,7 +25,9 @@ public class ApplicationDbContext : DbContext
     public DbSet<User> Users => Set<User>();
     public DbSet<BiometricTemplate> BiometricTemplates => Set<BiometricTemplate>();
     public DbSet<Role> Roles => Set<Role>();
+    public DbSet<Permission> Permissions => Set<Permission>();
     public DbSet<UserRole> UserRoles => Set<UserRole>();
+    public DbSet<RolePermission> RolePermissions => Set<RolePermission>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -90,6 +92,34 @@ public class ApplicationDbContext : DbContext
             entity.HasOne(x => x.Role)
                 .WithMany(x => x.UserRoles)
                 .HasForeignKey(x => x.RoleId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<Role>(entity =>
+        {
+            entity.HasIndex(x => x.Name)
+                .IsUnique();
+        });
+
+        modelBuilder.Entity<Permission>(entity =>
+        {
+            entity.HasIndex(x => x.Name)
+                .IsUnique();
+        });
+
+        modelBuilder.Entity<RolePermission>(entity =>
+        {
+            entity.HasIndex(x => new { x.RoleId, x.PermissionId })
+                .IsUnique();
+
+            entity.HasOne(x => x.Role)
+                .WithMany(x => x.RolePermissions)
+                .HasForeignKey(x => x.RoleId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(x => x.Permission)
+                .WithMany(x => x.RolePermissions)
+                .HasForeignKey(x => x.PermissionId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
 
