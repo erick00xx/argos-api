@@ -134,7 +134,7 @@
       <p>Documento generado desde la carpeta <strong>Models</strong> y enums usados por los modelos.</p>
       <div>
         <span class="chip">Proyecto: ArgosApi</span>
-        <span class="chip">Fecha: 2026-04-22</span>
+        <span class="chip">Fecha: 2026-04-28</span>
         <span class="chip">Formato: HTML</span>
       </div>
       <div class="note">
@@ -156,21 +156,24 @@
           <a href="#attendance">Attendance</a><br>
           <a href="#biometrictemplate">BiometricTemplate</a><br>
           <a href="#branch">Branch</a><br>
-          <a href="#clockprofile">ClockProfile</a><br>
           <a href="#company">Company</a><br>
           <a href="#companyalias">CompanyAlias</a><br>
+          <a href="#department">Department</a><br>
         </div>
         <div>
-          <a href="#department">Department</a><br>
           <a href="#device">Device</a><br>
           <a href="#employee">Employee</a><br>
           <a href="#employeeshift">EmployeeShift</a><br>
-          <a href="#schedule">Schedule</a><br>
-          <a href="#shift">Shift</a><br>
+          <a href="#permission">Permission</a><br>
+          <a href="#role">Role</a><br>
+          <a href="#rolepermission">RolePermission</a><br>
         </div>
         <div>
+          <a href="#schedule">Schedule</a><br>
+          <a href="#shift">Shift</a><br>
           <a href="#shiftdetail">ShiftDetail</a><br>
           <a href="#user">User</a><br>
+          <a href="#userrole">UserRole</a><br>
           <a href="#enums">Enums</a>
         </div>
       </div>
@@ -219,21 +222,6 @@
       </tbody>
     </table>
 
-    <h2 id="clockprofile">ClockProfile</h2>
-    <div class="small">Índice único: EmployeeId</div>
-    <table>
-      <thead><tr><th>Campo</th><th>Tipo C#</th><th>Nulo</th><th>Restricciones / Valores</th><th>Notas</th></tr></thead>
-      <tbody>
-        <tr><td>EmployeeId</td><td>Guid</td><td class="no">No</td><td>FK - Employee</td><td>1 a 1 con empleado</td></tr>
-        <tr><td>IsAttendanceTracked</td><td>bool</td><td class="no">No</td><td>Default: true</td><td>Controlar asistencia</td></tr>
-        <tr><td>EnrolledId</td><td>string</td><td class="no">No</td><td>required, MaxLength(50)</td><td>ID usado por reloj</td></tr>
-        <tr><td>ClockName</td><td>string</td><td class="no">No</td><td>required, MaxLength(100)</td><td>Nombre en reloj</td></tr>
-        <tr><td>ClockPrivilege</td><td>bool</td><td class="no">No</td><td>Default: false</td><td>Privilegios en reloj</td></tr>
-        <tr><td>IsPasswordAllowed</td><td>bool</td><td class="no">No</td><td>Default: false</td><td>Uso de contraseña</td></tr>
-        <tr><td>ClockPasswordHash</td><td>string?</td><td class="yes">Sí</td><td>MaxLength(200)</td><td>Hash de contraseña</td></tr>
-      </tbody>
-    </table>
-
     <h2 id="company">Company</h2>
     <table>
       <thead><tr><th>Campo</th><th>Tipo C#</th><th>Nulo</th><th>Restricciones / Valores</th><th>Notas</th></tr></thead>
@@ -243,14 +231,15 @@
         <tr><td>TaxId</td><td>string</td><td class="no">No</td><td>required, MaxLength(30)</td><td>Número fiscal</td></tr>
         <tr><td>BusinessLine</td><td>string</td><td class="no">No</td><td>required, MaxLength(120)</td><td>Giro de negocio</td></tr>
         <tr><td>PhoneNumber</td><td>string</td><td class="no">No</td><td>required, MaxLength(30)</td><td>Teléfono principal</td></tr>
-        <tr><td>Nickname</td><td>string</td><td class="no">No</td><td>required, MaxLength(100)</td><td>Alias interno</td></tr>
-        <tr><td>Email</td><td>string</td><td class="no">No</td><td>required, MaxLength(150), EmailAddress</td><td>Email corporativo</td></tr>
+        <tr><td>Nickname</td><td>string</td><td class="no">No</td><td>required, MaxLength(200)</td><td>Alias interno para el sistema</td></tr>
+        <tr><td>Email</td><td>string</td><td class="no">No</td><td>required, MaxLength(200), EmailAddress</td><td>Email corporativo</td></tr>
+        <tr><td>PasswordHash</td><td>string</td><td class="no">No</td><td>required</td><td>Hash de contraseña para login del company admin</td></tr>
         <tr><td>AddressLine1</td><td>string?</td><td class="yes">Sí</td><td>-</td><td>Dirección 1</td></tr>
         <tr><td>AddressLine2</td><td>string?</td><td class="yes">Sí</td><td>-</td><td>Dirección 2</td></tr>
         <tr><td>City</td><td>string?</td><td class="yes">Sí</td><td>-</td><td>Ciudad</td></tr>
         <tr><td>Country</td><td>string?</td><td class="yes">Sí</td><td>-</td><td>País</td></tr>
         <tr><td>PostalCode</td><td>string?</td><td class="yes">Sí</td><td>-</td><td>Código postal</td></tr>
-        <tr><td>LegalRepresentativeDocumentType</td><td>DocumentType</td><td class="no">No</td><td>Enum</td><td>Tipo documento representante</td></tr>
+        <tr><td>LegalRepresentativeDocumentType</td><td>DocumentType</td><td class="no">No</td><td>Enum</td><td>Tipo documento representante legal</td></tr>
         <tr><td>LegalRepresentativeDocument</td><td>string</td><td class="no">No</td><td>required, MaxLength(30)</td><td>Número documento representante</td></tr>
         <tr><td>LegalRepresentativeFullName</td><td>string</td><td class="no">No</td><td>required, MaxLength(200)</td><td>Nombre completo representante</td></tr>
         <tr><td>LegalRepresentativeEmail</td><td>string</td><td class="no">No</td><td>required, MaxLength(150), EmailAddress</td><td>Email representante</td></tr>
@@ -292,25 +281,25 @@
     <table>
       <thead><tr><th>Campo</th><th>Tipo C#</th><th>Nulo</th><th>Restricciones / Valores</th><th>Notas</th></tr></thead>
       <tbody>
+        <tr><td>BranchId</td><td>Guid</td><td class="no">No</td><td>FK - Branch</td><td>Sede asociada</td></tr>
         <tr><td>IsActive</td><td>bool</td><td class="no">No</td><td>Default: true</td><td>Estado del reloj</td></tr>
         <tr><td>ClockNumber</td><td>int</td><td class="no">No</td><td>-</td><td>ID interno del reloj</td></tr>
         <tr><td>Name</td><td>string</td><td class="no">No</td><td>required, MaxLength(120)</td><td>Nombre del dispositivo</td></tr>
-        <tr><td>BranchId</td><td>Guid</td><td class="no">No</td><td>FK - Branch</td><td>Sede asociada</td></tr>
         <tr><td>TimeZone</td><td>string?</td><td class="yes">Sí</td><td>MaxLength(50)</td><td>Zona horaria</td></tr>
-        <tr><td>Manufacturer</td><td>string</td><td class="no">No</td><td>required, MaxLength(80)</td><td>Fabricante</td></tr>
-        <tr><td>Model</td><td>string</td><td class="no">No</td><td>required, MaxLength(80)</td><td>Modelo</td></tr>
-        <tr><td>SerialNumber</td><td>string</td><td class="no">No</td><td>required, MaxLength(120)</td><td>Serie única de hardware</td></tr>
+        <tr><td>Manufacturer</td><td>string</td><td class="no">No</td><td>required, MaxLength(80)</td><td>Fabricante (Ej: ZKTeco, RelojControl)</td></tr>
+        <tr><td>Model</td><td>string</td><td class="no">No</td><td>required, MaxLength(80)</td><td>Modelo (Ej: T5)</td></tr>
+        <tr><td>SerialNumber</td><td>string</td><td class="no">No</td><td>required, MaxLength(120)</td><td>Serie única de hardware (CRUCIAL para ADMS)</td></tr>
         <tr><td>FingerprintAlgorithmVersion</td><td>string?</td><td class="yes">Sí</td><td>MaxLength(20)</td><td>Versión algoritmo huella</td></tr>
-        <tr><td>GenerateConnectionAlert</td><td>bool</td><td class="no">No</td><td>Default: false</td><td>Alerta de desconexión</td></tr>
-        <tr><td>LimitOneFingerprintPerEmployee</td><td>bool</td><td class="no">No</td><td>Default: false</td><td>Una huella por empleado</td></tr>
+        <tr><td>GenerateConnectionAlert</td><td>bool</td><td class="no">No</td><td>Default: false</td><td>Generar alerta de desconexión</td></tr>
+        <tr><td>LimitOneFingerprintPerEmployee</td><td>bool</td><td class="no">No</td><td>Default: false</td><td>Límitar una huella por empleado</td></tr>
         <tr><td>IpAddress</td><td>string?</td><td class="yes">Sí</td><td>MaxLength(45)</td><td>IP local</td></tr>
         <tr><td>Gateway</td><td>string?</td><td class="yes">Sí</td><td>MaxLength(45)</td><td>Gateway</td></tr>
         <tr><td>Dns</td><td>string?</td><td class="yes">Sí</td><td>MaxLength(100)</td><td>DNS</td></tr>
-        <tr><td>LastConnectionDate</td><td>DateTime?</td><td class="yes">Sí</td><td>-</td><td>Última conexión</td></tr>
-        <tr><td>AttendanceLogCount</td><td>int</td><td class="no">No</td><td>Default: 0</td><td>Cantidad de marcaciones</td></tr>
-        <tr><td>UserCount</td><td>int</td><td class="no">No</td><td>Default: 0</td><td>Usuarios cargados</td></tr>
-        <tr><td>FingerprintCount</td><td>int</td><td class="no">No</td><td>Default: 0</td><td>Huellas cargadas</td></tr>
-        <tr><td>FaceCount</td><td>int</td><td class="no">No</td><td>Default: 0</td><td>Rostros cargados</td></tr>
+        <tr><td>LastConnectionDate</td><td>DateTime?</td><td class="yes">Sí</td><td>-</td><td>Última conexión (se actualiza con cada "latido" ADMS)</td></tr>
+        <tr><td>AttendanceLogCount</td><td>int</td><td class="no">No</td><td>Default: 0</td><td>Cantidad de marcaciones almacenadas</td></tr>
+        <tr><td>UserCount</td><td>int</td><td class="no">No</td><td>Default: 0</td><td>Usuarios cargados en memoria</td></tr>
+        <tr><td>FingerprintCount</td><td>int</td><td class="no">No</td><td>Default: 0</td><td>Huellas cargadas en memoria</td></tr>
+        <tr><td>FaceCount</td><td>int</td><td class="no">No</td><td>Default: 0</td><td>Rostros cargados en memoria</td></tr>
       </tbody>
     </table>
 
@@ -318,19 +307,20 @@
     <table>
       <thead><tr><th>Campo</th><th>Tipo C#</th><th>Nulo</th><th>Restricciones / Valores</th><th>Notas</th></tr></thead>
       <tbody>
-        <tr><td>DepartmentId</td><td>Guid</td><td class="no">No</td><td>FK - Department</td><td>Departmento</td></tr>
+        <tr><td>DepartmentId</td><td>Guid</td><td class="no">No</td><td>FK - Department</td><td>Departamento</td></tr>
         <tr><td>BranchId</td><td>Guid</td><td class="no">No</td><td>FK - Branch</td><td>Sede</td></tr>
         <tr><td>CompanyId</td><td>Guid</td><td class="no">No</td><td>FK - Company</td><td>Compañía</td></tr>
         <tr><td>AliasId</td><td>Guid?</td><td class="yes">Sí</td><td>FK - CompanyAlias</td><td>Alias legal/comercial opcional</td></tr>
-        <tr><td>RegistrationDate</td><td>DateTime</td><td class="no">No</td><td>-</td><td>Fecha de registro</td></tr>
         <tr><td>DocumentType</td><td>DocumentType</td><td class="no">No</td><td>Enum</td><td>Tipo de documento</td></tr>
         <tr><td>Document</td><td>string</td><td class="no">No</td><td>required, MaxLength(30)</td><td>Número documento</td></tr>
-        <tr><td>FileCode</td><td>string?</td><td class="yes">Sí</td><td>MaxLength(30)</td><td>Código ficha</td></tr>
+        <tr><td>EnrolledId</td><td>string</td><td class="no">No</td><td>required, MaxLength(10)</td><td>Código visible en UI ("Código ficha")</td></tr>
+        <tr><td>PasswordHash</td><td>string</td><td class="no">No</td><td>required</td><td>Hash de contraseña del empleado</td></tr>
+        <tr><td>FileCode</td><td>string?</td><td class="yes">Sí</td><td>MaxLength(30)</td><td>Código ficha alternativo</td></tr>
         <tr><td>FirstName</td><td>string</td><td class="no">No</td><td>required, MaxLength(100)</td><td>Nombres</td></tr>
         <tr><td>LastName</td><td>string</td><td class="no">No</td><td>required, MaxLength(100)</td><td>Apellidos</td></tr>
-        <tr><td>BirthDate</td><td>DateTime</td><td class="no">No</td><td>-</td><td>Fecha de nacimiento</td></tr>
+        <tr><td>Profession</td><td>string?</td><td class="yes">Sí</td><td>MaxLength(120)</td><td>Profesión u ocupación</td></tr>
+        <tr><td>BirthDate</td><td>DateTime?</td><td class="yes">Sí</td><td>-</td><td>Fecha de nacimiento</td></tr>
         <tr><td>Gender</td><td>string?</td><td class="yes">Sí</td><td>MaxLength(20)</td><td>Género</td></tr>
-        <tr><td>Nationality</td><td>string?</td><td class="yes">Sí</td><td>MaxLength(100)</td><td>Nacionalidad</td></tr>
         <tr><td>OriginCountry</td><td>string?</td><td class="yes">Sí</td><td>MaxLength(100)</td><td>País de origen</td></tr>
         <tr><td>PersonalEmail</td><td>string?</td><td class="yes">Sí</td><td>MaxLength(150), EmailAddress</td><td>Email personal</td></tr>
         <tr><td>IsPersonalEmailVerified</td><td>bool</td><td class="no">No</td><td>Default: false</td><td>Verificación email personal</td></tr>
@@ -341,8 +331,16 @@
         <tr><td>HomePhone</td><td>string?</td><td class="yes">Sí</td><td>MaxLength(30)</td><td>Teléfono fijo</td></tr>
         <tr><td>MobilePhone</td><td>string?</td><td class="yes">Sí</td><td>MaxLength(30)</td><td>Teléfono móvil</td></tr>
         <tr><td>IsPhoneVerified</td><td>bool</td><td class="no">No</td><td>Default: false</td><td>Verificación teléfono</td></tr>
-        <tr><td>ContractStartDate</td><td>DateTime</td><td class="no">No</td><td>-</td><td>Inicio de contrato</td></tr>
+        <tr><td>notifyAttByEmail</td><td>bool</td><td class="no">No</td><td>Default: false</td><td>Notificar asistencia por email</td></tr>
+        <tr><td>attWebAllowed</td><td>bool</td><td class="no">No</td><td>Default: false</td><td>Permitir marcar asistencia desde la web (sin reloj)</td></tr>
+        <tr><td>IsAttendanceTracked</td><td>bool</td><td class="no">No</td><td>Default: true</td><td>Controlar asistencia del empleado</td></tr>
+        <tr><td>ClockName</td><td>string</td><td class="no">No</td><td>required, MaxLength(100)</td><td>Nombre en reloj</td></tr>
+        <tr><td>ClockPrivilege</td><td>bool</td><td class="no">No</td><td>Default: false</td><td>Privilegios en reloj</td></tr>
+        <tr><td>IsPasswordAllowed</td><td>bool</td><td class="no">No</td><td>Default: false</td><td>Permite marcar por contraseña en reloj</td></tr>
+        <tr><td>ClockPasswordHash</td><td>string?</td><td class="yes">Sí</td><td>MaxLength(20)</td><td>Hash de contraseña en reloj</td></tr>
+        <tr><td>ContractStartDate</td><td>DateTime?</td><td class="yes">Sí</td><td>-</td><td>Inicio de contrato</td></tr>
         <tr><td>ContractEndDate</td><td>DateTime?</td><td class="yes">Sí</td><td>-</td><td>Fin de contrato</td></tr>
+        <tr><td>IsActive</td><td>bool</td><td class="no">No</td><td>Default: true</td><td>Estado</td></tr>
       </tbody>
     </table>
 
@@ -355,6 +353,35 @@
         <tr><td>ShiftId</td><td>Guid</td><td class="no">No</td><td>FK - Shift</td><td>Turno asignado</td></tr>
         <tr><td>StartDate</td><td>DateTime</td><td class="no">No</td><td>-</td><td>Inicio de vigencia</td></tr>
         <tr><td>EndDate</td><td>DateTime?</td><td class="yes">Sí</td><td>-</td><td>Fin de vigencia; null = indefinido</td></tr>
+        <tr><td>IsActive</td><td>bool</td><td class="no">No</td><td>Default: true</td><td>Marca si turno sigue en uso (mantiene histórico)</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="permission">Permission</h2>
+    <table>
+      <thead><tr><th>Campo</th><th>Tipo C#</th><th>Nulo</th><th>Restricciones / Valores</th><th>Notas</th></tr></thead>
+      <tbody>
+        <tr><td>Name</td><td>string</td><td class="no">No</td><td>required</td><td>Nombre de permiso</td></tr>
+        <tr><td>Description</td><td>string?</td><td class="yes">Sí</td><td>-</td><td>Descripción del permiso</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="role">Role</h2>
+    <table>
+      <thead><tr><th>Campo</th><th>Tipo C#</th><th>Nulo</th><th>Restricciones / Valores</th><th>Notas</th></tr></thead>
+      <tbody>
+        <tr><td>Name</td><td>string</td><td class="no">No</td><td>required</td><td>Nombre de rol</td></tr>
+        <tr><td>Description</td><td>string?</td><td class="yes">Sí</td><td>-</td><td>Descripción del rol</td></tr>
+        <tr><td>IsActive</td><td>bool</td><td class="no">No</td><td>Default: true</td><td>Estado</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="rolepermission">RolePermission</h2>
+    <table>
+      <thead><tr><th>Campo</th><th>Tipo C#</th><th>Nulo</th><th>Restricciones / Valores</th><th>Notas</th></tr></thead>
+      <tbody>
+        <tr><td>RoleId</td><td>Guid</td><td class="no">No</td><td>FK - Role</td><td>Rol propietario</td></tr>
+        <tr><td>PermissionId</td><td>Guid</td><td class="no">No</td><td>FK - Permission</td><td>Permiso asignado</td></tr>
       </tbody>
     </table>
 
@@ -362,16 +389,17 @@
     <table>
       <thead><tr><th>Campo</th><th>Tipo C#</th><th>Nulo</th><th>Restricciones / Valores</th><th>Notas</th></tr></thead>
       <tbody>
+        <tr><td>CompanyId</td><td>Guid</td><td class="no">No</td><td>FK - Company</td><td>Compañía dueña</td></tr>
         <tr><td>Name</td><td>string</td><td class="no">No</td><td>required</td><td>Nombre de horario</td></tr>
-        <tr><td>CalendarColor</td><td>string?</td><td class="yes">Sí</td><td>-</td><td>Color de calendario</td></tr>
-        <tr><td>IsTwoDaySchedule</td><td>bool</td><td class="no">No</td><td>Default: false</td><td>Turno cruza medianoche</td></tr>
+        <tr><td>CalendarColor</td><td>string?</td><td class="yes">Sí</td><td>-</td><td>Color para mostrar en calendario</td></tr>
+        <tr><td>IsTwoDaySchedule</td><td>bool</td><td class="no">No</td><td>Default: false</td><td>Turno cruza medianoche (Ej: 22:00 a 06:00)</td></tr>
         <tr><td>MinEntryTime</td><td>TimeOnly</td><td class="no">No</td><td>-</td><td>Inicio ventana de entrada</td></tr>
         <tr><td>TargetEntryTime</td><td>TimeOnly</td><td class="no">No</td><td>-</td><td>Hora oficial de entrada</td></tr>
         <tr><td>MaxEntryTime</td><td>TimeOnly</td><td class="no">No</td><td>-</td><td>Fin ventana de entrada</td></tr>
         <tr><td>MinExitTime</td><td>TimeOnly</td><td class="no">No</td><td>-</td><td>Inicio ventana de salida</td></tr>
         <tr><td>TargetExitTime</td><td>TimeOnly</td><td class="no">No</td><td>-</td><td>Hora oficial de salida</td></tr>
         <tr><td>MaxExitTime</td><td>TimeOnly</td><td class="no">No</td><td>-</td><td>Fin ventana de salida</td></tr>
-        <tr><td>UsesBreak</td><td>bool</td><td class="no">No</td><td>Default: false</td><td>Usa descanso</td></tr>
+        <tr><td>UsesBreak</td><td>bool</td><td class="no">No</td><td>Default: false</td><td>Si el horario incluye descanso</td></tr>
         <tr><td>BreakStartTime</td><td>TimeOnly?</td><td class="yes">Sí</td><td>-</td><td>Inicio descanso</td></tr>
         <tr><td>BreakEndTime</td><td>TimeOnly?</td><td class="yes">Sí</td><td>-</td><td>Fin descanso</td></tr>
         <tr><td>BreakMinutes</td><td>int</td><td class="no">No</td><td>Default: 0</td><td>Minutos de descanso</td></tr>
@@ -382,12 +410,13 @@
     <table>
       <thead><tr><th>Campo</th><th>Tipo C#</th><th>Nulo</th><th>Restricciones / Valores</th><th>Notas</th></tr></thead>
       <tbody>
+        <tr><td>CompanyId</td><td>Guid</td><td class="no">No</td><td>FK - Company</td><td>Compañía dueña</td></tr>
         <tr><td>Name</td><td>string</td><td class="no">No</td><td>required</td><td>Nombre de turno</td></tr>
         <tr><td>Description</td><td>string?</td><td class="yes">Sí</td><td>-</td><td>Descripción</td></tr>
         <tr><td>IsActive</td><td>bool</td><td class="no">No</td><td>Default: true</td><td>Estado</td></tr>
-        <tr><td>Period</td><td>string</td><td class="no">No</td><td>required, Default: "Weekly"</td><td>Tipo de período</td></tr>
-        <tr><td>Extension</td><td>int</td><td class="no">No</td><td>Default: 1</td><td>Semanas de ciclo</td></tr>
-        <tr><td>IsFlexible</td><td>bool</td><td class="no">No</td><td>Default: false</td><td>Turno flexible</td></tr>
+        <tr><td>Period</td><td>string</td><td class="no">No</td><td>required, Default: "Weekly"</td><td>Tipo de período (Ej: Weekly, Monthly)</td></tr>
+        <tr><td>Extension</td><td>int</td><td class="no">No</td><td>Default: 1</td><td>Cantidad de semanas del ciclo</td></tr>
+        <tr><td>IsFlexible</td><td>bool</td><td class="no">No</td><td>Default: false</td><td>Si es turno flexible/especial</td></tr>
       </tbody>
     </table>
 
@@ -397,8 +426,8 @@
       <tbody>
         <tr><td>ShiftId</td><td>Guid</td><td class="no">No</td><td>FK - Shift</td><td>Turno padre</td></tr>
         <tr><td>ScheduleId</td><td>Guid</td><td class="no">No</td><td>FK - Schedule</td><td>Horario asociado</td></tr>
-        <tr><td>WeekNumber</td><td>int</td><td class="no">No</td><td>Default: 1</td><td>Semana del ciclo</td></tr>
-        <tr><td>DayOfWeek</td><td>DayOfWeek</td><td class="no">No</td><td>Enum BCL (0-6)</td><td>Día de semana</td></tr>
+        <tr><td>WeekNumber</td><td>int</td><td class="no">No</td><td>Default: 1</td><td>Semana del ciclo (Ej: 1 o 2 en turno bisemanal)</td></tr>
+        <tr><td>DayOfWeek</td><td>DayOfWeek</td><td class="no">No</td><td>Enum BCL (0-6)</td><td>Día de semana (Lunes, Martes, etc.)</td></tr>
       </tbody>
     </table>
 
@@ -406,9 +435,22 @@
     <table>
       <thead><tr><th>Campo</th><th>Tipo C#</th><th>Nulo</th><th>Restricciones / Valores</th><th>Notas</th></tr></thead>
       <tbody>
-        <tr><td>EmployeeId</td><td>Guid?</td><td class="yes">Sí</td><td>FK - Employee</td><td>Usuario puede no vincularse a empleado</td></tr>
-        <tr><td>UserName</td><td>string</td><td class="no">No</td><td>required, MaxLength(80)</td><td>Nombre de usuario</td></tr>
-        <tr><td>PasswordHash</td><td>string</td><td class="no">No</td><td>required, MaxLength(200)</td><td>Hash de contraseña</td></tr>
+        <tr><td>CompanyId</td><td>Guid?</td><td class="yes">Sí</td><td>FK - Company</td><td>Compañía asociada (null para super admin)</td></tr>
+        <tr><td>Username</td><td>string</td><td class="no">No</td><td>required, MaxLength(50)</td><td>Nombre de usuario único</td></tr>
+        <tr><td>Email</td><td>string</td><td class="no">No</td><td>required, MaxLength(100)</td><td>Email del usuario</td></tr>
+        <tr><td>PhoneNumber</td><td>string</td><td class="no">No</td><td>required, MaxLength(100)</td><td>Teléfono del usuario</td></tr>
+        <tr><td>FirstName</td><td>string</td><td class="no">No</td><td>required, MaxLength(100)</td><td>Nombres</td></tr>
+        <tr><td>LastName</td><td>string</td><td class="no">No</td><td>required, MaxLength(100)</td><td>Apellidos</td></tr>
+        <tr><td>PasswordHash</td><td>string</td><td class="no">No</td><td>required, MaxLength(100)</td><td>Hash de contraseña</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="userrole">UserRole</h2>
+    <table>
+      <thead><tr><th>Campo</th><th>Tipo C#</th><th>Nulo</th><th>Restricciones / Valores</th><th>Notas</th></tr></thead>
+      <tbody>
+        <tr><td>UserId</td><td>Guid</td><td class="no">No</td><td>FK - User</td><td>Usuario propietario</td></tr>
+        <tr><td>RoleId</td><td>Guid</td><td class="no">No</td><td>FK - Role</td><td>Rol asignado</td></tr>
       </tbody>
     </table>
 
@@ -468,8 +510,7 @@
     </div>
 
     <div class="footer">
-      Generado desde clases de dominio en <strong>Models</strong> + enums relacionados. 
-      Nota: La propiedad <code>Manufacturer</code> en <code>Device</code> está definida como <code>string</code> aunque existe enum <code>Manufacturer</code>.
+      Actualizado: 28 de abril de 2026. Generado desde clases de dominio en <strong>Models</strong> + enums relacionados.
     </div>
   </div>
 </body>

@@ -45,4 +45,22 @@ public class ReportsController : ControllerBase
 		var fileName = $"reporte_marcaciones_{DateTime.UtcNow:yyyyMMdd_HHmmss}.csv";
 		return File(result.Value, "text/csv; charset=utf-8", fileName);
 	}
+
+	[HttpGet("employees/export")]
+	[Authorize(Policy = "view:all")]
+	[SwaggerOperation(Summary = "Exportar empleados a CSV", Description = "Exporta la lista de empleados a un archivo CSV")]
+	public async Task<IActionResult> ExportEmployeesCsv()
+	{
+		var companyIdClaim = User.FindFirst("CompanyId")?.Value;
+        
+		if (!Guid.TryParse(companyIdClaim, out var companyId))
+			return Unauthorized(new { message = "CompanyId not found in token." });
+
+		var result = await _reportService.ExportEmployeesCsvAsync(companyId);
+		if (!result.IsSuccess)
+			return StatusCode(result.StatusCode ?? 500, new { error = result.Error });
+
+		var fileName = $"reporte_empleados_{DateTime.UtcNow:yyyyMMdd_HHmmss}.csv";
+		return File(result.Value, "text/csv; charset=utf-8", fileName);
+	}
 }

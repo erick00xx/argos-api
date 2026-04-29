@@ -278,7 +278,8 @@ public class AttendanceService : IAttendanceService
                 AttendanceSource.Web,
                 null,
                 null,
-                null)
+                null),
+            CreatedAt = DateTime.UtcNow
         };
         _context.Attendances.Add(attendance);
         await _context.SaveChangesAsync();

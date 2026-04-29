@@ -504,4 +504,98 @@ public class EmployeeService : IEmployeeService
             throw;
         }
     }
+
+    public async Task<Result<bool>> CreateAsync(EmployeeCreateDto dto, Guid userId)
+    {
+        var companyId = await _context.Users
+            .Where(u => u.Id == userId)
+            .Select(u => u.CompanyId)
+            .FirstOrDefaultAsync();
+
+        if (companyId == Guid.Empty || companyId == null)
+            return Result<bool>.Fail("Company not found.", 404);
+
+        var employe = new Employee
+        {
+            DepartmentId = dto.DepartmentId,
+            BranchId = dto.BranchId,
+            CompanyId = companyId.Value,
+            AliasId = dto.AliasId,
+            DocumentType = dto.DocumentType,
+            Document = dto.Document,
+            EnrolledId = dto.EnrolledId,
+            PasswordHash = dto.Document.Substring(Math.Max(0, dto.Document.Length - 4)), // los ultimos 4 digitos de su documento
+            FileCode = dto.FileCode,
+            FirstName = dto.FirstName,
+            LastName = dto.LastName,
+            Profession = dto.Profession,
+            BirthDate = dto.BirthDate,
+            Gender = dto.Gender,
+            OriginCountry = dto.OriginCountry,
+            PersonalEmail = dto.PersonalEmail,
+            CorporateEmail = dto.CorporateEmail,
+            AddressLine1 = dto.AddressLine1,
+            AddressLine2 = dto.AddressLine2,
+            City = dto.City,
+            HomePhone = dto.HomePhone,
+            MobilePhone = dto.MobilePhone,
+            notifyAttByEmail = dto.notifyAttByEmail,
+            attWebAllowed = dto.attWebAllowed,
+            IsAttendanceTracked = dto.IsAttendanceTracked,
+            ClockPrivilege = dto.ClockPrivilege,
+            ClockName = dto.ClockName,
+            ContractStartDate = dto.ContractStartDate,
+            ContractEndDate = dto.ContractEndDate,
+            CreatedBy = userId,
+            CreatedAt = DateTime.UtcNow,
+
+        };
+        _context.Employees.Add(employe);
+        await _context.SaveChangesAsync();
+        return Result<bool>.Ok(true);
+    }
+
+    public async Task<Result<bool>> UpdateAsync(EmployeeUpdateDto dto, Guid userId)
+    {
+        var employee = _context.Employees.FirstOrDefault(e => e.Id == dto.Id);
+        if (employee == null)
+            return Result<bool>.Fail("Employee not found.", 404);
+
+        var existingEmployeeWithDocument = await _context.Employees
+            .AsNoTracking()
+            .Where(e => e.CompanyId == employee.CompanyId && e.Document == dto.Document && e.Id != dto.Id)
+            .FirstOrDefaultAsync();
+
+        if (existingEmployeeWithDocument != null)
+            return Result<bool>.Fail("Employee with the same document already exists.", 400);
+
+        employee.DepartmentId = dto.DepartmentId;
+        employee.BranchId = dto.BranchId;
+        employee.AliasId = dto.AliasId;
+        employee.Document = dto.Document;
+        employee.FileCode = dto.FileCode;
+        employee.Profession = dto.Profession;
+        employee.BirthDate = dto.BirthDate;
+        employee.Gender = dto.Gender;
+        employee.OriginCountry = dto.OriginCountry;
+        employee.PersonalEmail = dto.PersonalEmail;
+        employee.CorporateEmail = dto.CorporateEmail;
+        employee.AddressLine1 = dto.AddressLine1;
+        employee.AddressLine2 = dto.AddressLine2;
+        employee.City = dto.City;
+        employee.HomePhone = dto.HomePhone;
+        employee.MobilePhone = dto.MobilePhone;
+        employee.notifyAttByEmail = dto.notifyAttByEmail;
+        employee.attWebAllowed = dto.attWebAllowed;
+        employee.IsAttendanceTracked = dto.IsAttendanceTracked;
+        employee.ClockPrivilege = dto.ClockPrivilege;
+        employee.IsActive = dto.EmployeeIsActive;
+        employee.ContractStartDate = dto.ContractStartDate;
+        employee.ContractEndDate = dto.ContractEndDate;
+        employee.UpdatedBy = userId;
+        employee.UpdatedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+        return Result<bool>.Ok(true);
+    }
 }

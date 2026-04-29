@@ -39,7 +39,18 @@ public class BranchController : ControllerBase
             return StatusCode(result.StatusCode ?? 500, new { error = result.Error });
         }
 
-        return Ok(result.Value);
+        var response = new
+        {
+            Data = result.Value,
+            Pagination = new
+            {
+                result.PageNumber,
+                result.PageSize,
+                result.TotalPages,
+                result.TotalRecords
+            }
+        };
+        return Ok(response);
     }
 
     [HttpPost]
@@ -65,7 +76,7 @@ public class BranchController : ControllerBase
             return StatusCode(result.StatusCode ?? 500, new { error = result.Error });
         }
 
-        return CreatedAtAction(nameof(GetBranches), new { id = result.Value.Id }, result.Value);
+        return Ok(result.Value);
     }
 
     [HttpPut("{id}")]
@@ -95,7 +106,7 @@ public class BranchController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Policy = "delete:branch")]
+    [Authorize(Policy = "delete:all")]
     [SwaggerOperation(Summary = "Elimina una sucursal existente. (no eliminar ni una que ya estaba antes xd)")]
     public async Task<IActionResult> DeleteBranch(Guid id)
     {

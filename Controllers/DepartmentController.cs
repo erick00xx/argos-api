@@ -39,7 +39,18 @@ public class DepartmentController : ControllerBase
             return StatusCode(result.StatusCode ?? 500, new { error = result.Error });
         }
 
-        return Ok(result.Value);
+        var response = new
+        {
+            Data = result.Value,
+            Pagination = new
+            {
+                result.PageNumber,
+                result.PageSize,
+                result.TotalPages,
+                result.TotalRecords
+            }
+        };
+        return Ok(response);
     }
 
     [HttpPost]
@@ -85,7 +96,7 @@ public class DepartmentController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Policy = "delete:department")]
+    [Authorize(Policy = "delete:all")]
     [SwaggerOperation(Summary = "Elimina un departamento existente. (no eliminar ni uno que ya estaba antes xd)")]
     public async Task<IActionResult> DeleteDepartment(Guid id)
     {
@@ -102,7 +113,7 @@ public class DepartmentController : ControllerBase
             return StatusCode(result.StatusCode ?? 500, new { error = result.Error });
         }
 
-        return Ok(result.Value);
+        return Ok(result);
     }
 
 }

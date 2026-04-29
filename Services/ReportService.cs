@@ -82,7 +82,7 @@ public class ReportService : IReportService
 			"Ficha",
 			"Nombre",
 			"RUT",
-			"Compañía",
+			"Empresa",
 			"Sucursal",
 			"Departamento",
 			"Fecha",
@@ -109,8 +109,8 @@ public class ReportService : IReportService
 				row.Document,
 				row.Code,
 				row.FileCode,
-				row.Rut,
 				row.Name,
+				row.Rut,
 				row.CompanyName,
 				row.BranchName,
 				row.DepartmentName,
@@ -170,5 +170,93 @@ public class ReportService : IReportService
 		{
 			return TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time");
 		}
+	}
+
+	public async Task<Result<byte[]>> ExportEmployeesCsvAsync(Guid companyId)
+	{
+
+		var query = _context.Employees
+			.AsNoTracking()
+			.Where(e => e.CompanyId == companyId)
+			.OrderBy(e => e.LastName);
+
+		var rows = await query
+			.Select(e => new EmployeesReportDto
+			{
+				Document = e.Document,
+				Code = e.EnrolledId,
+				FileCode = e.FileCode ?? string.Empty,
+				FullName = e.LastName + " " + e.FirstName,
+				TaxId = e.AliasId != null ? e.Alias!.TaxId : e.Company.TaxId,
+				CompanyName = e.AliasId != null ? e.Alias!.Name : e.Company.CompanyName,
+				BranchName = e.Branch.Name,
+				DepartmentName = e.Department.Name,
+				BirthDate = e.BirthDate.HasValue ? e.BirthDate.Value.ToString("o") : string.Empty,
+				Gender = e.Gender ?? string.Empty,
+				CorporateEmail = e.CorporateEmail ?? string.Empty,
+				ContractStartDate = e.ContractStartDate.HasValue ? e.ContractStartDate.Value.ToString("o") : string.Empty,
+				AddressLine1 = e.AddressLine1 ?? string.Empty,
+			}).ToListAsync();
+
+		if (rows.Count == 0)
+			return Result<byte[]>.Fail("No hay empleados para exportar.", 404);
+
+		var headers = new[]
+		{
+			"Documento",
+			"Codigo en Huellero",
+			"Ficha",
+			"Nombre completo",
+			"RUT",
+			"Empresa",
+			"Sucursal",
+			"Departamento",
+			"Fecha de nacimiento",
+			"Género",
+			"Correo corporativo",
+			"Fecha inicio contrato",
+			"Dirección"
+		};
+
+		var builder = new StringBuilder();
+		builder.AppendLine(string.Join(";", headers));
+
+		foreach (var row in rows)
+		{
+
+
+			if (!string.IsNullOrEmpty(row.BirthDate))
+			{
+				row.BirthDate = ConvertUtcToPeruTime(DateTime.Parse(row.BirthDate)).ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+			}
+
+			if(!string.IsNullOrEmpty(row.ContractStartDate))
+			{
+				row.ContractStartDate = ConvertUtcToPeruTime(DateTime.Parse(row.ContractStartDate)).ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+			}
+
+			var values = new[]
+			{
+				row.Document,
+				row.Code,
+				row.FileCode,
+				row.FullName,
+				row.TaxId,
+				row.CompanyName,
+				row.BranchName,
+				row.DepartmentName,
+				row.BirthDate,
+				row.Gender,
+				row.CorporateEmail,
+				row.ContractStartDate,
+				row.AddressLine1
+			};
+			builder.AppendLine(string.Join(";", values.Select(EscapeCsvValue)));
+		}
+
+		var csv = builder.ToString();
+
+		var bytes = new UTF8Encoding(encoderShouldEmitUTF8Identifier: true).GetBytes(csv);
+		return Result<byte[]>.Ok(bytes);
 	}
 }

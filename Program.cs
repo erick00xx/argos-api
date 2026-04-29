@@ -15,6 +15,7 @@ builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IBranchService, BranchService>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddScoped<IDeviceService, DeviceService>();
 
 // Add services to the container.
 builder.Services.AddCors(options =>
@@ -89,6 +90,7 @@ builder.Services.AddAuthorization(
         options.AddPolicy("view:attendances", policy => policy.RequireClaim("permission", "view:attendances"));
         options.AddPolicy("create:users", policy => policy.RequireClaim("permission", "create:users"));
         options.AddPolicy("view:all", policy => policy.RequireClaim("permission", "view:all"));
+        options.AddPolicy("delete:all", policy => policy.RequireClaim("permission", "delete:all"));
     }
 );
 builder.Services.AddHttpContextAccessor(); // Add HttpContextAccessor for accessing user information in services

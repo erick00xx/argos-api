@@ -123,5 +123,49 @@ public class ApplicationDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade);
         });
 
+
+        DisableCascadeDeletes(modelBuilder);
+
+        ConfigureCascadeRules(modelBuilder);
+    }
+
+    private static void DisableCascadeDeletes(ModelBuilder modelBuilder)
+    {
+        foreach (var foreignKey in modelBuilder.Model
+                     .GetEntityTypes()
+                     .SelectMany(entityType => entityType.GetForeignKeys())
+                     .Where(foreignKey => !foreignKey.IsOwnership))
+        {
+            foreignKey.DeleteBehavior = DeleteBehavior.Restrict;
+        }
+    }
+
+    private static void ConfigureCascadeRules(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<UserRole>(entity =>
+            {
+                entity.HasOne(x => x.User)
+                    .WithMany(x => x.UserRoles)
+                    .HasForeignKey(x => x.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(x => x.Role)
+                    .WithMany(x => x.UserRoles)
+                    .HasForeignKey(x => x.RoleId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+        modelBuilder.Entity<RolePermission>(entity =>
+        {
+            entity.HasOne(x => x.Role)
+                .WithMany(x => x.RolePermissions)
+                .HasForeignKey(x => x.RoleId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(x => x.Permission)
+                .WithMany(x => x.RolePermissions)
+                .HasForeignKey(x => x.PermissionId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
     }
 }
