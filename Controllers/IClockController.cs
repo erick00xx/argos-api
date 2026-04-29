@@ -1,6 +1,7 @@
 using System;
 using ArgosApi.Dtos;
 using ArgosApi.Handlers;
+using ArgosApi.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ArgosApi.Controllers;
@@ -11,10 +12,12 @@ public class IClockController : ControllerBase
 {
 
     private readonly ClockDataProcessor _clockDataProcessor;
+    private readonly IDeviceCommandService _clockService;
 
-    public IClockController(ClockDataProcessor clockDataProcessor)
+    public IClockController(ClockDataProcessor clockDataProcessor, IDeviceCommandService deviceCommandService)
     {
         _clockDataProcessor = clockDataProcessor;
+        _clockService = deviceCommandService;
     }
     [HttpGet("ping")]
     public IActionResult Ping()
@@ -27,13 +30,12 @@ public class IClockController : ControllerBase
     {
         return Content("OK", "text/plain");
     }
-
     [HttpGet("getrequest")] // Send commands.
     public async Task<IActionResult> GetRequest([FromQuery] DeviceGetRequest request)
     {
 
-
-        return Content("OK", "text/plain");
+        var response = await _clockService.ExecuteCommandAsync(request.SN);
+        return Content(response, "text/plain");
     }
 
     [HttpPost("cdata")] // Receive attendance data.
@@ -50,4 +52,22 @@ public class IClockController : ControllerBase
         return StatusCode(500, "Error processing data");
     }
 
+    [HttpPost("devicecmd")] // Receive command execution result.
+    public async Task<IActionResult> ReceiveCommandResult([FromQuery] CommandResultRequest request)
+    {
+        using var reader = new StreamReader(Request.Body, System.Text.Encoding.UTF8, leaveOpen: false);
+        var body = await reader.ReadToEndAsync();
+        var success = await _clockService.ProcessDeviceCommandResultsAsync(request.SN, body);
+
+        if (success)
+            return Content("OK", "text/plain");
+
+        return StatusCode(500, "Error processing command result");
+    }
+
+}
+
+public class CommandResultRequest
+{
+    public string SN { get; set; } = string.Empty;
 }

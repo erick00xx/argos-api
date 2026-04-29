@@ -22,6 +22,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<ShiftDetail> ShiftDetails => Set<ShiftDetail>();
     public DbSet<EmployeeShift> EmployeeShifts => Set<EmployeeShift>();
     public DbSet<Attendance> Attendances => Set<Attendance>();
+    public DbSet<DeviceCommand> DeviceCommands => Set<DeviceCommand>();
     public DbSet<User> Users => Set<User>();
     public DbSet<BiometricTemplate> BiometricTemplates => Set<BiometricTemplate>();
     public DbSet<Role> Roles => Set<Role>();
@@ -121,6 +122,17 @@ public class ApplicationDbContext : DbContext
                 .WithMany(x => x.RolePermissions)
                 .HasForeignKey(x => x.PermissionId)
                 .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<DeviceCommand>(entity =>
+        {
+            entity.HasIndex(x => new { x.DeviceId, x.CommandNumber })
+                .IsUnique();
+
+            entity.HasOne(x => x.Device)
+                .WithMany(x => x.DeviceCommands)
+                .HasForeignKey(x => x.DeviceId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
 
 

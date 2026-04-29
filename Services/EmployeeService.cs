@@ -551,9 +551,41 @@ public class EmployeeService : IEmployeeService
 
         };
         _context.Employees.Add(employe);
+
+        var devicesId = await _context.Devices
+            .Where(d => d.BranchId == dto.BranchId)
+            .Select(d => d.Id)
+            .ToListAsync();
+        
+        // Extraer el último CommandNumber por cada dispositivo para asignar el siguiente número de comando de forma secuencial.
+        var commandNumber = await _context.DeviceCommands
+            .Where(dc => devicesId.Contains(dc.DeviceId))
+            .GroupBy(dc => dc.DeviceId)
+            .Select(g => new { DeviceId = g.Key, MaxCommandNumber = g.Max(dc => dc.CommandNumber) })
+            .ToDictionaryAsync(x => x.DeviceId, x => x.MaxCommandNumber);
+
+
+
+        foreach (var deviceId in devicesId)
+        {
+            var number = commandNumber.ContainsKey(deviceId) ? commandNumber[deviceId] + 1 : 1;
+            var cloclPrivilege = dto.ClockPrivilege ? 0 : 14; // 0 para usuario normal, 14 para admin
+            var devicecommand = new DeviceCommand
+            {
+                DeviceId = deviceId,
+                CommandNumber = number,
+                CommandText = $"C:{number}:DATA UPDATE USERINFO PIN={dto.EnrolledId}\tName={dto.ClockName}\tPri={cloclPrivilege}\n",
+                Status = "pending",
+                CreatedAt = DateTime.UtcNow,
+                CreatedBy = userId
+            };
+            _context.DeviceCommands.Add(devicecommand);
+        }
+
         await _context.SaveChangesAsync();
         return Result<bool>.Ok(true);
     }
+
 
     public async Task<Result<bool>> UpdateAsync(EmployeeUpdateDto dto, Guid userId)
     {

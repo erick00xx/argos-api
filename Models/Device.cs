@@ -51,4 +51,5 @@ public class Device : EntityBase // También puedes llamarlo 'ClockDevice'
     public Branch Branch { get; set; } = null!;
     // Relación: Un dispositivo puede tener muchas marcaciones registradas en él
     public ICollection<Attendance> Attendances { get; set; } = new List<Attendance>();
+    public ICollection<DeviceCommand> DeviceCommands { get; set; } = new List<DeviceCommand>(); 
 }
