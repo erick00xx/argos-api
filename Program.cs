@@ -122,60 +122,6 @@ app.UseCors("AllowFrontend");
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Log de endpoints no definidos
-app.Map("/{**catchAll}", async (HttpContext context) =>
-{
-    context.Request.EnableBuffering(); // 🔥 permite leer el body varias veces
-
-    var request = context.Request;
-
-    // 📦 BODY
-    string body = "";
-    using (var reader = new StreamReader(request.Body, Encoding.UTF8, leaveOpen: true))
-    {
-        body = await reader.ReadToEndAsync();
-        request.Body.Position = 0; // importante
-    }
-
-    // 📌 QUERY PARAMS
-    var queryParams = string.Join(", ", request.Query.Select(q => $"{q.Key}={q.Value}"));
-
-    // 📌 HEADERS
-    var headers = string.Join(", ", request.Headers.Select(h => $"{h.Key}={h.Value}"));
-
-    // 📌 FORM (por si manda x-www-form-urlencoded)
-    string formData = "";
-    if (request.HasFormContentType)
-    {
-        var form = await request.ReadFormAsync();
-        formData = string.Join(", ", form.Select(f => $"{f.Key}={f.Value}"));
-    }
-
-    // 📌 INFO GENERAL
-    var log = $@"
----- REQUEST ----
-DATE: {DateTime.Now}
-IP: {context.Connection.RemoteIpAddress}
-METHOD: {request.Method}
-PATH: {request.Path}
-QUERY: {queryParams}
-HEADERS: {headers}
-CONTENT-TYPE: {request.ContentType}
-BODY: {body}
-FORM: {formData}
------------------
-
-";
-
-    await File.AppendAllTextAsync("logs.txt", log);
-
-    // 🔥 RESPUESTA PARA ZKTeco
-    if (request.Path.Value.Contains("/iclock"))
-    {
-        return Results.Text("OK");
-    }
-    return Results.Ok();
-});
 
 app.MapControllers();
 
