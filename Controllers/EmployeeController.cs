@@ -76,12 +76,72 @@ public class EmployeeController : ControllerBase
 
         if (employees.Value == null || employees.Value.Count == 0)
             return NotFound(new { error = "No employees found with the provided criteria." });
-            
-        return Ok(employees);
-    }
-}
 
-public class EmployeeCsvImportRequest
-{
-    public IFormFile File { get; set; } = null!;
+        var response = new
+        {
+            Data = employees.Value,
+            Pagination = new
+            {
+                employees.PageNumber,
+                employees.PageSize,
+                employees.TotalPages,
+                employees.TotalRecords
+            }
+        };
+        return Ok(response);
+    }
+
+
+    [HttpPost]
+    [Authorize(Policy = "view:all")]
+    [SwaggerOperation(Summary = "Crea un nuevo empleado.")]
+    public async Task<IActionResult> CreateEmployee([FromBody] EmployeeCreateDto dto)
+    {
+
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+        if (userIdClaim == null || !Guid.TryParse(userIdClaim.Value, out var userId))
+        {
+            return Unauthorized(new { error = "User ID claim is missing or invalid." });
+        }
+
+        var result = await _employeeService.CreateAsync(dto, userId);
+        if (!result.IsSuccess)
+            return StatusCode(result.StatusCode ?? 500, new { error = result.Error });
+
+        return Ok(result.Value);
+    }
+
+    [HttpPut]
+    [Authorize(Policy = "view:all")]
+    [SwaggerOperation(Summary = "Actualiza un empleado existente (solo ciertos datos, no todo el perfil).")]
+    public async Task<IActionResult> UpdateEmployee([FromBody] EmployeeUpdateDto dto)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+        if (userIdClaim == null || !Guid.TryParse(userIdClaim.Value, out var userId))
+        {
+            return Unauthorized(new { error = "User ID claim is missing or invalid." });
+        }
+
+        var result = await _employeeService.UpdateAsync(dto, userId);
+        if (!result.IsSuccess)
+            return StatusCode(result.StatusCode ?? 500, new { error = result.Error });
+
+        return Ok(result.Value);
+    }
+
+
+    public class EmployeeCsvImportRequest
+    {
+        public IFormFile File { get; set; } = null!;
+    }
 }

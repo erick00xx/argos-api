@@ -50,15 +50,30 @@ public class DepartmentService : IDepartmentService
 
     public async Task<Result<bool>> DeleteAsync(Guid id)
     {
-        var department = await _context.Departments.FirstOrDefaultAsync(d => d.Id == id);
-        if (department == null)
-            return Result<bool>.Fail("Department not found", 404);
+        try
+        {
+            var department = await _context.Departments
+                .FirstOrDefaultAsync(d => d.Id == id);
 
-        _context.Departments.Remove(department);
+            if (department == null)
+                return Result<bool>.Fail("Department not found", 404);
 
-        await _context.SaveChangesAsync();
+            var hasEmployees = await _context.Employees
+                .AnyAsync(e => e.DepartmentId == id);
 
-        return Result<bool>.Ok(true);
+            if (hasEmployees)
+                return Result<bool>.Fail("Cannot delete department with active employees", 400); 
+
+            _context.Departments.Remove(department);
+
+            await _context.SaveChangesAsync();
+
+            return Result<bool>.Ok(true);
+        }
+        catch (Exception ex)
+        {
+            return Result<bool>.Fail($"Error deleting department: {ex.Message}", 500);
+        }
     }
 
     public async Task<PagedResult<List<DepartmentDto>>> GetPagedAsync(Guid? userId, bool? status, int pageNumber = 1, int pageSize = 10, string? searchTerm = null)
@@ -72,7 +87,7 @@ public class DepartmentService : IDepartmentService
                 .Where(u => u.Id == userId)
                 .Select(u => u.CompanyId)
                 .FirstOrDefaultAsync();
-            
+
             if (!companyId.HasValue || companyId == Guid.Empty)
                 return PagedResult<List<DepartmentDto>>.Fail("User's company not found", 404);
 

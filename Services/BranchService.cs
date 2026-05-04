@@ -25,7 +25,7 @@ public class BranchService : IBranchService
             .Select(u => u.CompanyId)
             .FirstOrDefaultAsync();
 
-        if(companyId == Guid.Empty || companyId == null)
+        if (companyId == Guid.Empty || companyId == null)
             return Result<BranchDto>.Fail("User's company not found", 404);
 
         var branch = new Branch
@@ -55,12 +55,36 @@ public class BranchService : IBranchService
 
     public async Task<Result<bool>> DeleteAsync(Guid id)
     {
-        var branch = _context.Branches.FirstOrDefault(b => b.Id == id);
-        if (branch == null)
-            return Result<bool>.Fail("Branch not found", 404);
-        _context.Branches.Remove(branch);
-        await _context.SaveChangesAsync();
-        return Result<bool>.Ok(true);
+        try
+        {
+            var branch = _context.Branches
+                .FirstOrDefault(b => b.Id == id && b.IsActive);
+
+            if (branch == null)
+                return Result<bool>.Fail("Branch not found", 404);
+
+            var hasEmployees = await _context.Employees
+                .AnyAsync(e => e.BranchId == id);
+
+            if (hasEmployees)
+                return Result<bool>.Fail("Cannot delete branch with associated employees", 400);
+
+            var hasDevices = await _context.Devices
+                .AnyAsync(d => d.BranchId == id);
+            if (hasDevices)
+                return Result<bool>.Fail("Cannot delete branch with associated devices", 400);
+
+            _context.Branches.Remove(branch);
+
+            await _context.SaveChangesAsync();
+
+            return Result<bool>.Ok(true);
+        }
+        catch (Exception ex)
+        {
+            var message = ex.InnerException?.Message ?? ex.Message;
+            return Result<bool>.Fail($"Error deleting branch: {message}", 500);
+        }
     }
 
     public async Task<Result<BranchDto>> GetByIdAsync(Guid id)
@@ -91,7 +115,7 @@ public class BranchService : IBranchService
                 .Where(u => u.Id == userId)
                 .Select(u => u.CompanyId)
                 .FirstOrDefaultAsync();
-            
+
             if (!companyId.HasValue || companyId == Guid.Empty)
                 return PagedResult<List<BranchDto>>.Fail("User's company not found", 404);
 

@@ -15,6 +15,8 @@ builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IBranchService, BranchService>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddScoped<IDeviceService, DeviceService>();
+builder.Services.AddScoped<IDeviceCommandService, DeviceCommandService>();
 
 // Add services to the container.
 builder.Services.AddCors(options =>
@@ -23,7 +25,9 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins(
                 "http://localhost:4173",
-                "http://localhost:4174"
+                "http://localhost:4174",
+                "http://172.30.101.73:4173",
+                "http://172.30.101.73:4174"
             )
             .AllowAnyHeader()
             .AllowAnyMethod();
@@ -89,6 +93,7 @@ builder.Services.AddAuthorization(
         options.AddPolicy("view:attendances", policy => policy.RequireClaim("permission", "view:attendances"));
         options.AddPolicy("create:users", policy => policy.RequireClaim("permission", "create:users"));
         options.AddPolicy("view:all", policy => policy.RequireClaim("permission", "view:all"));
+        options.AddPolicy("delete:all", policy => policy.RequireClaim("permission", "delete:all"));
     }
 );
 builder.Services.AddHttpContextAccessor(); // Add HttpContextAccessor for accessing user information in services
@@ -116,6 +121,61 @@ app.UseCors("AllowFrontend");
 // Use Authentication and Authorization middleware
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Log de endpoints no definidos
+app.Map("/{**catchAll}", async (HttpContext context) =>
+{
+    context.Request.EnableBuffering(); // 🔥 permite leer el body varias veces
+
+    var request = context.Request;
+
+    // 📦 BODY
+    string body = "";
+    using (var reader = new StreamReader(request.Body, Encoding.UTF8, leaveOpen: true))
+    {
+        body = await reader.ReadToEndAsync();
+        request.Body.Position = 0; // importante
+    }
+
+    // 📌 QUERY PARAMS
+    var queryParams = string.Join(", ", request.Query.Select(q => $"{q.Key}={q.Value}"));
+
+    // 📌 HEADERS
+    var headers = string.Join(", ", request.Headers.Select(h => $"{h.Key}={h.Value}"));
+
+    // 📌 FORM (por si manda x-www-form-urlencoded)
+    string formData = "";
+    if (request.HasFormContentType)
+    {
+        var form = await request.ReadFormAsync();
+        formData = string.Join(", ", form.Select(f => $"{f.Key}={f.Value}"));
+    }
+
+    // 📌 INFO GENERAL
+    var log = $@"
+---- REQUEST ----
+DATE: {DateTime.Now}
+IP: {context.Connection.RemoteIpAddress}
+METHOD: {request.Method}
+PATH: {request.Path}
+QUERY: {queryParams}
+HEADERS: {headers}
+CONTENT-TYPE: {request.ContentType}
+BODY: {body}
+FORM: {formData}
+-----------------
+
+";
+
+    await File.AppendAllTextAsync("logs.txt", log);
+
+    // 🔥 RESPUESTA PARA ZKTeco
+    if (request.Path.Value.Contains("/iclock"))
+    {
+        return Results.Text("OK");
+    }
+    return Results.Ok();
+});
 
 app.MapControllers();
 

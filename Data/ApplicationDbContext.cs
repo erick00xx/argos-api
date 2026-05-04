@@ -22,6 +22,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<ShiftDetail> ShiftDetails => Set<ShiftDetail>();
     public DbSet<EmployeeShift> EmployeeShifts => Set<EmployeeShift>();
     public DbSet<Attendance> Attendances => Set<Attendance>();
+    public DbSet<DeviceCommand> DeviceCommands => Set<DeviceCommand>();
     public DbSet<User> Users => Set<User>();
     public DbSet<BiometricTemplate> BiometricTemplates => Set<BiometricTemplate>();
     public DbSet<Role> Roles => Set<Role>();
@@ -123,5 +124,60 @@ public class ApplicationDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade);
         });
 
+        modelBuilder.Entity<DeviceCommand>(entity =>
+        {
+            entity.HasIndex(x => new { x.DeviceId, x.CommandNumber })
+                .IsUnique();
+
+            entity.HasOne(x => x.Device)
+                .WithMany(x => x.DeviceCommands)
+                .HasForeignKey(x => x.DeviceId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+
+        DisableCascadeDeletes(modelBuilder);
+
+        ConfigureCascadeRules(modelBuilder);
+    }
+
+    private static void DisableCascadeDeletes(ModelBuilder modelBuilder)
+    {
+        foreach (var foreignKey in modelBuilder.Model
+                     .GetEntityTypes()
+                     .SelectMany(entityType => entityType.GetForeignKeys())
+                     .Where(foreignKey => !foreignKey.IsOwnership))
+        {
+            foreignKey.DeleteBehavior = DeleteBehavior.Restrict;
+        }
+    }
+
+    private static void ConfigureCascadeRules(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<UserRole>(entity =>
+            {
+                entity.HasOne(x => x.User)
+                    .WithMany(x => x.UserRoles)
+                    .HasForeignKey(x => x.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(x => x.Role)
+                    .WithMany(x => x.UserRoles)
+                    .HasForeignKey(x => x.RoleId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+        modelBuilder.Entity<RolePermission>(entity =>
+        {
+            entity.HasOne(x => x.Role)
+                .WithMany(x => x.RolePermissions)
+                .HasForeignKey(x => x.RoleId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(x => x.Permission)
+                .WithMany(x => x.RolePermissions)
+                .HasForeignKey(x => x.PermissionId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
     }
 }

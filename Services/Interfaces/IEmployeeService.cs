@@ -7,4 +7,6 @@ public interface IEmployeeService
 {
 	Task<Result<EmployeeCsvImportResultDto>> ImportFromCsvAsync(IFormFile file, Guid companyId, Guid? userId);
 	Task<PagedResult<List<EmployeeDto>>> GetPagedAsync(Guid companyId, EmployeeRequestDto request, int pageNumber = 1, int pageSize = 10);
+	Task<Result<bool>> CreateAsync(EmployeeCreateDto dto, Guid userId);
+	Task<Result<bool>> UpdateAsync(EmployeeUpdateDto dto, Guid userId);
 }

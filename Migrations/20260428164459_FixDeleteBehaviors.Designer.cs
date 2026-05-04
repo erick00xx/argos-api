@@ -3,6 +3,7 @@ using System;
 using ArgosApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ArgosApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260428164459_FixDeleteBehaviors")]
+    partial class FixDeleteBehaviors
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -484,49 +487,6 @@ namespace ArgosApi.Migrations
                     b.HasIndex("BranchId");
 
                     b.ToTable("Devices");
-                });
-
-            modelBuilder.Entity("ArgosApi.Models.DeviceCommand", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("CommandNumber")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("CommandText")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("CreatedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("DeviceId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime?>("ExecutedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("ReturnCode")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("SentAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DeviceId", "CommandNumber")
-                        .IsUnique();
-
-                    b.ToTable("DeviceCommands");
                 });
 
             modelBuilder.Entity("ArgosApi.Models.Employee", b =>
@@ -1151,17 +1111,6 @@ namespace ArgosApi.Migrations
                     b.Navigation("Branch");
                 });
 
-            modelBuilder.Entity("ArgosApi.Models.DeviceCommand", b =>
-                {
-                    b.HasOne("ArgosApi.Models.Device", "Device")
-                        .WithMany("DeviceCommands")
-                        .HasForeignKey("DeviceId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Device");
-                });
-
             modelBuilder.Entity("ArgosApi.Models.Employee", b =>
                 {
                     b.HasOne("ArgosApi.Models.CompanyAlias", "Alias")
@@ -1335,8 +1284,6 @@ namespace ArgosApi.Migrations
             modelBuilder.Entity("ArgosApi.Models.Device", b =>
                 {
                     b.Navigation("Attendances");
-
-                    b.Navigation("DeviceCommands");
                 });
 
             modelBuilder.Entity("ArgosApi.Models.Employee", b =>
